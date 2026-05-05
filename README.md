@@ -1,22 +1,53 @@
 # Movie Ticket Booking System (Console) - DSA Mini Project
 
-A simple console-based movie booking app designed to demonstrate data structure usage in C++.  
-This repository contains code for managing movies, shows, bookings, and waitlists without relying on STL containers.
+A modern, console-based movie ticket booking app designed to demonstrate fundamental Data Structures and Algorithms (DSA) usage in C++.  
+This repository contains code for managing movies, shows, bookings, waitlists, and seating arrangements without relying on C++ STL containers.
 
-## Tech
-- C++ (standard library limited to strings & iostream; custom data structures used instead of STL containers)
-- Custom DSAs implemented for educational purposes:
-  - **BST** (binary search tree) for movie title indexing
-  - **Hash table** mapping IDs to array indices
-  - **Singly linked list** to track bookings per show
-  - **Queue** (circular array) for waitlist management
+## 🚀 Features
+- **Seat Booking & Management**: Real-time tracking of seat availability using a custom `SeatingGrid` component.
+- **Waitlist Management**: First-In-First-Out (FIFO) queue management for fully booked shows.
+- **Fast Lookups**: Hash table-based data retrieval mapping IDs directly to arrays.
+- **Fast Searching**: Binary Search Tree (BST) used for efficient movie title querying.
+- **Sorting**: Merge Sort used for organizing shows.
+- **Custom Structures**: Singly linked lists to track bookings instead of standard vectors.
 
+## 🏗️ Project Architecture
+The project follows a modular structure, separating interfaces (`include/`) from implementations (`src/`).
 
-## How to run
-Compile and run `src/main.cpp`.
+### Directory Structure
+- `include/`: Header files (`.h`) containing class definitions and interfaces.
+- `src/`: Source files (`.cpp`) containing the core logic and custom DSA implementations.
 
-Use a C++ compiler (e.g. `g++`)
+### Custom DSAs Implemented
+- **BSTMovieTitle**: Binary Search Tree for indexing and searching movie titles.
+- **HashTableIntToIndex**: Hash map structure mapping IDs to array indices.
+- **SinglyLinkedListInt**: List structure tracking bookings per show.
+- **QueueArrayWait**: Circular array acting as a Queue for waitlist requests.
+- **MergeSortShows**: Implementation of Merge Sort tailored for sorting shows.
+- **SeatingGrid**: 2D Matrix structure for real-time seating states and assignments.
 
-  g++ src\main.cpp src\app\BookingSystem.cpp src\data\*.cpp src\dsa\*.cpp src\ui\*.cpp -o app.exe
+## 🛠️ Technology Stack
+- **Language**: C++ (Standard library usage strictly limited to strings and iostream)
+- **Architecture**: Separated Header & Source Modular Pattern
 
-  ./app.exe
+## ⚙️ How to Compile & Run
+The application can be compiled natively using `g++`. It is also pre-configured with a `.vscode/tasks.json` for easy building in VS Code.
+
+### Command Line Compilation
+1. Open your terminal or command prompt and navigate to the project root directory.
+2. Compile the source code by including the header directory and all source files:
+   ```sh
+   g++ -I./include src/*.cpp -o app.exe
+   ```
+3. Run the compiled application:
+   ```sh
+   ./app.exe
+   ```
+
+### VS Code Compilation
+1. Open the project folder in VS Code.
+2. Press `Ctrl + Shift + B` (Windows/Linux) or `Cmd + Shift + B` (macOS) to run the default build task.
+3. Run `./app.exe` in the integrated terminal.
+
+## 📜 License
+This project was developed for educational purposes to demonstrate the practical application of custom Data Structures and Algorithms.
