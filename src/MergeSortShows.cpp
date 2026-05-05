@@ -52,7 +52,6 @@ void MergeSortShows::merge(int arr[], int left, int mid, int right, const Store 
     j = 0;
     k = left;
 
-    
     while (i < n1 && j < n2)
     {
         if (store.shows[leftArr[i]].datetime <= store.shows[rightArr[j]].datetime)
