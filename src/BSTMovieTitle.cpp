@@ -1,7 +1,7 @@
 #include <cstring>
 
-#include "BSTMovieTitle.h"
 
+#include "BSTMovieTitle.h"
 BSTMovieTitle::BSTMovieTitle()
 {
     root = NULL;
