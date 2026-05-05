@@ -38,8 +38,25 @@ void SampleData::load(Store &store)
         }
     }
 
-    store.shows[0].seats[4][5] = 1;
-    store.shows[0].seats[4][6] = 1;
-    store.shows[0].seats[5][5] = 1;
-    store.shows[0].availableCount -= 3;
+    // Pre-populate show 0 with 3 booked seats backed by a real Booking record.
+    // This ensures viewBooking(), cancelBooking(), and waitlist processing all
+    // see a consistent state — no orphaned occupied seats without a booking ID.
+    {
+        int bi = store.bookingCount;
+
+        store.bookings[bi].id            = store.nextBookingId;
+        store.bookings[bi].showId        = store.shows[0].id;
+        store.bookings[bi].customerName  = "Sample Customer";
+        store.bookings[bi].seatCount     = 3;
+        store.bookings[bi].seatR[0]      = 4;
+        store.bookings[bi].seatC[0]      = 5;
+        store.bookings[bi].seatR[1]      = 4;
+        store.bookings[bi].seatC[1]      = 6;
+        store.bookings[bi].seatR[2]      = 5;
+        store.bookings[bi].seatC[2]      = 5;
+        store.bookings[bi].status        = STATUS_CONFIRMED;
+
+        store.bookingCount++;
+        store.nextBookingId++;
+    }
 }

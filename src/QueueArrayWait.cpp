@@ -1,3 +1,4 @@
+#include <iostream>
 #include "QueueArrayWait.h"
 
 QueueArrayWait::QueueArrayWait()

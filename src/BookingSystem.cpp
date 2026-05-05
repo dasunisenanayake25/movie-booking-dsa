@@ -29,6 +29,31 @@ BookingSystem::BookingSystem()
     {
         syncShowPointers(i);
     }
+
+    // Initialize each SeatingGrid.
+    for (i = 0; i < store.showCount; i++)
+    {
+        showGrids[i].init(ROWS, COLS);
+    }
+
+    // Rebuild seat state from authoritative booking records
+    for (i = 0; i < store.bookingCount; i++)
+    {
+        if (store.bookings[i].status == STATUS_CONFIRMED)
+        {
+            int showIndex;
+            if (showIdIndex.get(store.bookings[i].showId, showIndex))
+            {
+                for (int s = 0; s < store.bookings[i].seatCount; s++)
+                {
+                    int r = store.bookings[i].seatR[s];
+                    int c = store.bookings[i].seatC[s];
+                    showGrids[showIndex].selectSeat(r, c);
+                }
+                showGrids[showIndex].confirmBooking();
+            }
+        }
+    }
 }
 
 void BookingSystem::listMovies() const
@@ -101,7 +126,7 @@ int BookingSystem::listShowsForMovieSorted(int movieId, int outShowIds[]) const
         cout << "Show ID: " << store.shows[showIndices[i]].id
              << " | Datetime: " << store.shows[showIndices[i]].datetime
              << " | Price: " << store.shows[showIndices[i]].price
-             << " | Available Seats: " << store.shows[showIndices[i]].availableCount
+             << " | Available Seats: " << showGrids[showIndices[i]].getAvailableCount()
              << " | Waitlist: " << store.shows[showIndices[i]].waitCount << endl;
     }
 
@@ -111,8 +136,6 @@ int BookingSystem::listShowsForMovieSorted(int movieId, int outShowIds[]) const
 void BookingSystem::printSeatMap(int showId) const
 {
     int showIndex;
-    int r;
-    int c;
 
     if (!showIdIndex.get(showId, showIndex))
     {
@@ -121,47 +144,7 @@ void BookingSystem::printSeatMap(int showId) const
     }
 
     cout << "Seat Map for Show " << showId << " (" << store.shows[showIndex].datetime << ")" << endl;
-    cout << "   ";
-    for (c = 0; c < COLS; c++)
-    {
-        if (c + 1 < 10)
-        {
-            cout << " " << c + 1 << " ";
-        }
-        else
-        {
-            cout << c + 1 << " ";
-        }
-    }
-    cout << endl;
-
-    for (r = 0; r < ROWS; r++)
-    {
-        if (r + 1 < 10)
-        {
-            cout << " " << r + 1 << " ";
-        }
-        else
-        {
-            cout << r + 1 << " ";
-        }
-
-        for (c = 0; c < COLS; c++)
-        {
-            if (store.shows[showIndex].seats[r][c] == 0)
-            {
-                cout << " O ";
-            }
-            else
-            {
-                cout << " X ";
-            }
-        }
-        cout << endl;
-    }
-
-    cout << "O = Available, X = Booked" << endl;
-    cout << "Available Seats: " << store.shows[showIndex].availableCount << endl;
+    showGrids[showIndex].displayGrid();
 }
 
 int BookingSystem::bookSingle(int showId, const std::string &name, int row, int col)
@@ -182,7 +165,7 @@ int BookingSystem::bookSingle(int showId, const std::string &name, int row, int 
         return 0;
     }
 
-    if (store.shows[showIndex].seats[row - 1][col - 1] != 0)
+    if (!showGrids[showIndex].isAvailable(row - 1, col - 1))
     {
         cout << "Error: That seat is already booked." << endl;
         return 0;
@@ -196,12 +179,12 @@ int BookingSystem::bookSingle(int showId, const std::string &name, int row, int 
         return 0;
     }
 
-    occupySeats(showIndex, &seat, 1);
     bookingId = createBookingRecord(showIndex, name, &seat, 1);
     if (bookingId == -1)
     {
         return 0;
     }
+    occupySeats(showIndex, &seat, 1);
 
     cout << "Booking Confirmed!" << endl;
     cout << "Booking ID: " << bookingId << endl;
@@ -241,12 +224,12 @@ int BookingSystem::bookGroup(int showId, const std::string &name, int seatsNeede
         return 0;
     }
 
-    occupySeats(showIndex, seats, seatsNeeded);
     bookingId = createBookingRecord(showIndex, name, seats, seatsNeeded);
     if (bookingId == -1)
     {
         return 0;
     }
+    occupySeats(showIndex, seats, seatsNeeded);
 
     cout << "Booking Confirmed!" << endl;
     cout << "Booking ID: " << bookingId << endl;
@@ -261,6 +244,56 @@ int BookingSystem::bookGroup(int showId, const std::string &name, int seatsNeede
     }
     cout << endl;
     cout << "Total price: " << store.shows[showIndex].price * seatsNeeded << endl;
+    return 1;
+}
+
+int BookingSystem::bookGroupSeats(int showId, const std::string &name, Seat seats[], int seatCount)
+{
+    int showIndex;
+    int bookingId;
+    int i;
+
+    if (!showIdIndex.get(showId, showIndex))
+    {
+        cout << "Error: Invalid show ID." << endl;
+        return 0;
+    }
+
+    if (seatCount < 1 || seatCount > MAX_SEATS_IN_BOOKING)
+    {
+        cout << "Error: Invalid seat count." << endl;
+        return 0;
+    }
+
+    for (i = 0; i < seatCount; i++)
+    {
+        if (!showGrids[showIndex].isAvailable(seats[i].r, seats[i].c))
+        {
+            cout << "Error: One or more recommended seats are no longer available." << endl;
+            return 0;
+        }
+    }
+
+    bookingId = createBookingRecord(showIndex, name, seats, seatCount);
+    if (bookingId == -1)
+    {
+        return 0;
+    }
+    occupySeats(showIndex, seats, seatCount);
+
+    cout << "Booking Confirmed!" << endl;
+    cout << "Booking ID: " << bookingId << endl;
+    cout << "Seats: ";
+    for (i = 0; i < seatCount; i++)
+    {
+        cout << "(" << (int)seats[i].r + 1 << "," << (int)seats[i].c + 1 << ")";
+        if (i < seatCount - 1)
+        {
+            cout << ", ";
+        }
+    }
+    cout << endl;
+    cout << "Total price: " << store.shows[showIndex].price * seatCount << endl;
     return 1;
 }
 
@@ -403,6 +436,13 @@ int BookingSystem::isShowForMovie(int movieId, int showId) const
     return store.shows[showIndex].movieId == movieId;
 }
 
+int BookingSystem::getMovieIds(int outIds[]) const
+{
+    int count;
+    movieTitleIndex.inOrderList(outIds, count);
+    return count;
+}
+
 void BookingSystem::buildMovieIndex()
 {
     int i;
@@ -424,9 +464,14 @@ void BookingSystem::buildShowIndex()
 void BookingSystem::buildBookingIndex()
 {
     int i;
+    int showIndex;
     for (i = 0; i < store.bookingCount; i++)
     {
         bookingIdIndex.put(store.bookings[i].id, i);
+        if (showIdIndex.get(store.bookings[i].showId, showIndex))
+        {
+            showBookingLists[showIndex].insertLast(store.bookings[i].id);
+        }
     }
 }
 
@@ -436,13 +481,11 @@ void BookingSystem::syncShowPointers(int showIndex)
 
     if (showWaitQueues[showIndex].isEmpty())
     {
-        store.shows[showIndex].waitFront = NULL;
-        store.shows[showIndex].waitRear = NULL;
+        store.shows[showIndex].waitQueue = NULL;
     }
     else
     {
-        store.shows[showIndex].waitFront = &showWaitQueues[showIndex];
-        store.shows[showIndex].waitRear = &showWaitQueues[showIndex];
+        store.shows[showIndex].waitQueue = &showWaitQueues[showIndex];
     }
 
     store.shows[showIndex].waitCount = showWaitQueues[showIndex].getSize();
@@ -505,7 +548,7 @@ int BookingSystem::allocateContiguousBlock(int showIndex, int seatsNeeded, Seat 
             found = 1;
             for (offset = 0; offset < seatsNeeded; offset++)
             {
-                if (store.shows[showIndex].seats[row][start + offset] != 0)
+                if (!showGrids[showIndex].isAvailable(row, start + offset))
                 {
                     found = 0;
                     break;
@@ -559,7 +602,7 @@ int BookingSystem::allocateNearestSeats(int showIndex, int seatsNeeded, Seat out
     {
         for (c = 0; c < COLS; c++)
         {
-            if (store.shows[showIndex].seats[r][c] == 0)
+            if (showGrids[showIndex].isAvailable(r, c))
             {
                 freeSeats[totalFree].r = (unsigned char)r;
                 freeSeats[totalFree].c = (unsigned char)c;
@@ -616,7 +659,7 @@ int BookingSystem::allocateNearestSeats(int showIndex, int seatsNeeded, Seat out
 
 int BookingSystem::allocateGroupSeats(int showIndex, int seatsNeeded, Seat outSeats[]) const
 {
-    if (store.shows[showIndex].availableCount < seatsNeeded)
+    if (showGrids[showIndex].getAvailableCount() < seatsNeeded)
     {
         return 0;
     }
@@ -632,27 +675,17 @@ int BookingSystem::allocateGroupSeats(int showIndex, int seatsNeeded, Seat outSe
 void BookingSystem::occupySeats(int showIndex, Seat seats[], int seatCount)
 {
     int i;
-    int r;
-    int c;
-
     for (i = 0; i < seatCount; i++)
     {
-        r = seats[i].r;
-        c = seats[i].c;
-        if (store.shows[showIndex].seats[r][c] == 0)
-        {
-            store.shows[showIndex].seats[r][c] = 1;
-            store.shows[showIndex].availableCount--;
-        }
+        showGrids[showIndex].selectSeat(seats[i].r, seats[i].c);
     }
+    showGrids[showIndex].confirmBooking();
 }
 
 void BookingSystem::freeBookingSeats(int bookingIndex)
 {
     int showIndex;
     int i;
-    int r;
-    int c;
 
     if (!showIdIndex.get(store.bookings[bookingIndex].showId, showIndex))
     {
@@ -661,14 +694,9 @@ void BookingSystem::freeBookingSeats(int bookingIndex)
 
     for (i = 0; i < store.bookings[bookingIndex].seatCount; i++)
     {
-        r = store.bookings[bookingIndex].seatR[i];
-        c = store.bookings[bookingIndex].seatC[i];
-
-        if (store.shows[showIndex].seats[r][c] != 0)
-        {
-            store.shows[showIndex].seats[r][c] = 0;
-            store.shows[showIndex].availableCount++;
-        }
+        showGrids[showIndex].cancelSeat(
+            store.bookings[bookingIndex].seatR[i],
+            store.bookings[bookingIndex].seatC[i]);
     }
 }
 
@@ -685,12 +713,16 @@ void BookingSystem::processWaitlist(int showIndex)
             break;
         }
 
+        int newBookingId = createBookingRecord(showIndex, request.name, seats, request.seatsRequested);
+        if (newBookingId == -1)
+        {
+            break;
+        }
         occupySeats(showIndex, seats, request.seatsRequested);
-        createBookingRecord(showIndex, request.name, seats, request.seatsRequested);
         showWaitQueues[showIndex].deQueue(removed);
 
         cout << "Waitlist auto-booked: " << request.name
-             << " | Booking ID: " << store.nextBookingId - 1
+             << " | Booking ID: " << newBookingId
              << " | Seats: " << request.seatsRequested << endl;
     }
 
@@ -711,10 +743,20 @@ int BookingSystem::recommendSeats(int showId, int seatsNeeded, Seat outSeats[]) 
         return 0;
     }
 
-    if (store.shows[showIndex].availableCount < seatsNeeded)
+    if (showGrids[showIndex].getAvailableCount() < seatsNeeded)
     {
         return 0;
     }
 
     return allocateGroupSeats(showIndex, seatsNeeded, outSeats);
+}
+
+int BookingSystem::getAvailableCount(int showId) const
+{
+    int showIndex;
+    if (!showIdIndex.get(showId, showIndex))
+    {
+        return 0;
+    }
+    return showGrids[showIndex].getAvailableCount();
 }

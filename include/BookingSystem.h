@@ -2,13 +2,14 @@
 #define BOOKINGSYSTEM_H
 
 #include <string>
-#include "../include/Store.h"
-#include "../include/BSTMovieTitle.h"
-#include "../include/HashTableIntToIndex.h"
-// #include "../include/MergeSortShows.h"
-#include "../include/QueueArrayWait.h"
-#include "../include/SinglyLinkedListInt.h"
-#include "../include/Seat.h"
+#include "Store.h"
+#include "BSTMovieTitle.h"
+#include "HashTableIntToIndex.h"
+#include "MergeSortShows.h"
+#include "QueueArrayWait.h"
+#include "SeatingGrid.h"
+#include "SinglyLinkedListInt.h"
+#include "Seat.h"
 
 class BookingSystem
 {
@@ -19,6 +20,7 @@ private:
     HashTableIntToIndex bookingIdIndex;
     SinglyLinkedListInt showBookingLists[MAX_SHOWS];
     QueueArrayWait showWaitQueues[MAX_SHOWS];
+    SeatingGrid showGrids[MAX_SHOWS];
 
     void buildMovieIndex();
     void buildShowIndex();
@@ -43,12 +45,15 @@ public:
     void printSeatMap(int showId) const;
     int bookSingle(int showId, const std::string &name, int row, int col);
     int bookGroup(int showId, const std::string &name, int seatsNeeded);
+    int bookGroupSeats(int showId, const std::string &name, Seat seats[], int seatCount);
     void viewBooking(int bookingId) const;
     int cancelBooking(int bookingId, const std::string &name);
     int joinWaitlist(int showId, const std::string &name, int seatsNeeded);
 
     int hasMovie(int movieId) const;
     int isShowForMovie(int movieId, int showId) const;
+    int getMovieIds(int outIds[]) const;
+    int getAvailableCount(int showId) const;
 };
 
 #endif

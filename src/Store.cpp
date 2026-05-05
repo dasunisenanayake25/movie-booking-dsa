@@ -37,23 +37,12 @@ int addShow(Store &s, int movieId, const std::string &datetime, int price)
     sh.movieId = movieId;
     sh.datetime = datetime;
     sh.price = price;
-    initShowSeats(sh);
 
     s.showCount++;
     return sh.id;
 }
 
-void initShowSeats(Show &show)
-{
-    show.availableCount = ROWS * COLS;
-    for (int r = 0; r < ROWS; r++)
-    {
-        for (int c = 0; c < COLS; c++)
-        {
-            show.seats[r][c] = 0;
-        }
-    }
-}
+
 
 int findMovieIndexById(const Store &store, int movieId)
 {
