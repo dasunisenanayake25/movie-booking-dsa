@@ -1,6 +1,8 @@
 #ifndef BSTMOVIETITLE_H
 #define BSTMOVIETITLE_H
 
+#include <algorithm>
+#include <cctype>
 #include <string>
 
 class BSTMovieTitle
@@ -10,6 +12,7 @@ public:
     {
         int movieId;
         std::string title;
+        std::string titleLower;
         Node *left;
         Node *right;
         Node *parent;
@@ -22,6 +25,12 @@ private:
     void clearNode(Node *node);
     void inOrderFill(Node *node, int outIds[], int &count) const;
 
+    std::string toLower(std::string s) const{
+        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){
+            return static_cast<char>(std::tolower(c));
+        });
+        return s;
+    }
 public:
     BSTMovieTitle();
     ~BSTMovieTitle();
