@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineBook — Now Showing</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── Hero ── */
+    .hero-section {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      min-height: 260px;
+      display: grid;
+      align-items: center;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(201,168,76,0.12), transparent),
+        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(192,57,43,0.07), transparent),
+        linear-gradient(180deg, rgba(20,20,20,0) 0%, rgba(8,8,8,0.8) 100%);
+      pointer-events: none;
+    }
+
+    /* Film strip decorative lines */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.6;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+    }
+
+    .hero-inner {
+      position: relative;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.8;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .hero-subtitle {
+      max-width: 50ch;
+      margin: 0 auto;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .hero-search-wrap {
+      display: grid;
+      gap: 0.4rem;
+      max-width: 520px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .search-row input {
+      flex: 1;
+    }
+
+    /* ── Movie Cards ── */
+    .movie-card-trigger {
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      color: inherit;
+      display: block;
+    }
+
+    .poster-container {
+      aspect-ratio: 2 / 3;
+      border-radius: var(--radius-md);
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .poster-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      pointer-events: none;
+    }
+
+    .movie-poster {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s var(--transition);
+    }
+
+    .movie-card:hover .movie-poster { transform: scale(1.06); }
+
+    .poster-placeholder {
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--bg-raised),
+        var(--bg-raised) 10px,
+        var(--bg-hover) 10px,
+        var(--bg-hover) 20px
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: var(--text-muted);
+    }
+
+    /* Skeleton */
+    .poster-skeleton {
+      aspect-ratio: 2 / 3;
+      border-radius: var(--radius-md);
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+    }
+
+    .line-skeleton {
+      height: 11px;
+      border-radius: 999px;
+      background: var(--bg-raised);
+      margin: 0.75rem 0 0;
+    }
+
+    .line-skeleton.short { width: 55%; margin-bottom: 0.5rem; }
+
+    .skeleton-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-120%);
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.05), transparent);
+      animation: shimmer 1.4s infinite;
+    }
+
+    .skeleton-card { position: relative; overflow: hidden; }
+
+    @keyframes shimmer { to { transform: translateX(120%); } }
+
+    .movie-card-body {
+      padding: 0.75rem 0.25rem 0.25rem;
+      display: grid;
+      gap: 0.2rem;
+    }
+
+    .movie-title {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      line-height: 1.25;
+    }
+
+    .movie-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .movie-card-selected .poster-container {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-gold);
+    }
+
+    /* ── Showtimes ── */
+    .showtime-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.2s var(--transition);
+    }
+
+    .showtime-row:hover { border-color: var(--border-hover); }
+
+    .showtime-left { display: grid; gap: 0.2rem; }
+
+    .showtime-datetime {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .showtime-meta { font-size: 0.82rem; }
+
+    .showtime-right {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .showtime-price {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--gold);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .select-seats-btn {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      color: #0a0a0a;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.2s var(--transition);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .select-seats-btn:hover {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #0a0a0a;
+      box-shadow: 0 0 16px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+
+    /* ── Summary row ── */
+    .summary-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    #result-summary {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .hero-inner { padding: 1.75rem 1.25rem; text-align: left; }
+      .hero-subtitle { margin: 0; }
+      .hero-search-wrap { max-width: 100%; }
+      .search-row { flex-direction: column; }
+      .showtime-right { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header" role="banner">
+    <div class="container">
+      <div class="header-row">
+        <div class="brand" aria-label="CineBook">
+          <strong>🎬 CineBook</strong>
+        </div>
+        <nav class="top-nav" aria-label="Primary navigation">
+          <a href="index.html" class="active" aria-current="page">Now Showing</a>
+          <a href="booking.html">My Booking</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-content">
+
+    <!-- Hero -->
+    <section class="hero-section" aria-label="Welcome">
+      <div class="hero-bg"></div>
+      <div class="hero-inner">
+        <div class="hero-eyebrow">Now Playing</div>
+        <h1 class="hero-title">Your Seat Awaits</h1>
+        <p class="hero-subtitle">Browse the current selection and secure your seats in seconds.</p>
+
+        <div class="hero-search-wrap" role="search">
+          <div class="search-row">
+            <input
+              id="search-input"
+              type="search"
+              placeholder="Search by movie title..."
+              autocomplete="off"
+              aria-label="Search movies"
+            >
+            <button id="clear-search" type="button" class="button-secondary" aria-label="Clear search">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div id="page-feedback" class="hidden" role="alert"></div>
+      </div>
+    </section>
+
+    <!-- Movies grid -->
+    <section class="panel" aria-label="Movies">
+      <div class="section-heading">
+        <h2>Now Showing</h2>
+        <span id="loading-indicator" class="loading hidden" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Loading...</span>
+        </span>
+      </div>
+
+      <div class="summary-bar" style="margin-bottom:1rem;">
+        <p id="result-summary" class="status-text">Loading movies...</p>
+      </div>
+
+      <div id="movies-grid" class="card-grid" aria-live="polite">
+        <!-- Skeleton placeholders -->
+        <article class="card skeleton-card" aria-hidden="true">
+          <div class="poster-skeleton"></div>
+          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
+        </article>
+        <article class="card skeleton-card" aria-hidden="true">
+          <div class="poster-skeleton"></div>
+          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
+        </article>
+        <article class="card skeleton-card" aria-hidden="true">
+          <div class="poster-skeleton"></div>
+          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
+        </article>
+        <article class="card skeleton-card" aria-hidden="true">
+          <div class="poster-skeleton"></div>
+          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
+        </article>
+        <article class="card skeleton-card" aria-hidden="true">
+          <div class="poster-skeleton"></div>
+          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Showtimes panel -->
+    <section id="showtimes-panel" class="panel hidden" aria-label="Showtimes">
+      <div class="section-heading">
+        <div>
+          <h2 id="showtimes-title">Showtimes</h2>
+          <p id="showtimes-subtitle" class="subtle">Select a showtime to choose your seats.</p>
+        </div>
+      </div>
+      <div id="showtimes-content" class="stack-list"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">🎬 CineBook — Cinema Booking System</div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script>
+    // ── DOM refs ──
+    const moviesGrid      = document.getElementById('movies-grid');
+    const searchInput     = document.getElementById('search-input');
+    const clearSearchBtn  = document.getElementById('clear-search');
+    const pageFeedback    = document.getElementById('page-feedback');
+    const resultSummary   = document.getElementById('result-summary');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const showtimesPanel  = document.getElementById('showtimes-panel');
+    const showtimesTitle  = document.getElementById('showtimes-title');
+    const showtimesSubtitle = document.getElementById('showtimes-subtitle');
+    const showtimesContent = document.getElementById('showtimes-content');
+
+    let debounceTimer   = null;
+    let expandedMovieId = null;
+    let currentMovies   = [];
+    const showtimeCache = {};
+
+    function escapeHtml(v) {
+      return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function setLoading(on) {
+      loadingIndicator.classList.toggle('hidden', !on);
+    }
+
+    function showBanner(msg, type) {
+      if (!msg) { pageFeedback.className = 'hidden'; pageFeedback.textContent = ''; return; }
+      pageFeedback.className = 'banner banner-' + type;
+      pageFeedback.textContent = msg;
+    }
+
+    function availabilityClass(n) {
+      const c = Number(n);
+      if (!Number.isFinite(c)) return 'subtle';
+      return c > 5 ? 'availability-good' : 'availability-low';
+    }
+
+    // ── Movie poster map ──
+    const moviePosters = {
+      'joker':          'images/joker.png',
+      'titanic':        'images/titanic.png',
+      'the dark knight':'images/dark_knight.png',
+      'dark knight':    'images/dark_knight.png',
+      'avatar':         'images/avatar.png',
+      'coco':           'images/coco.png',
+      'interstellar':   'images/interstellar.png',
+      'inception':      'images/inception.png',
+      'gladiator':      'images/gladiator.png',
+      'frozen':         'images/frozen.png',
+      'dune':           'images/dune.png'
+    };
+
+    function getPosterUrl(title) {
+      const key = String(title || '').toLowerCase().trim();
+      for (const m in moviePosters) {
+        if (key.includes(m) || m.includes(key)) return moviePosters[m];
+      }
+      return null;
+    }
+
+    // ── Render movies ──
+    function renderMovies(movies) {
+      if (!movies.length) {
+        moviesGrid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <div style="font-size:2rem;margin-bottom:0.5rem">🎬</div>
+            <strong style="color:var(--text-secondary)">No movies found</strong>
+            <p style="margin-top:0.25rem;font-size:0.85rem">Try a different search term.</p>
+          </div>`;
+        showtimesPanel.classList.add('hidden');
+        return;
+      }
+
+      moviesGrid.innerHTML = movies.map(movie => {
+        const selected = expandedMovieId === movie.id;
+        const poster   = getPosterUrl(movie.title);
+        const posterHtml = poster
+          ? `<img src="${poster}" class="movie-poster" alt="${escapeHtml(movie.title)} poster" loading="lazy">`
+          : `<div class="poster-placeholder">🎞️</div>`;
+
+        return `
+          <article class="card movie-card ${selected ? 'movie-card-selected' : ''}">
+            <button
+              type="button"
+              class="movie-card-trigger"
+              data-movie-id="${movie.id}"
+              aria-pressed="${selected}"
+              aria-label="Select ${escapeHtml(movie.title)}"
+            >
+              <div class="poster-container">${posterHtml}</div>
+              <div class="movie-card-body">
+                <div class="movie-title">${escapeHtml(movie.title)}</div>
+                <div class="movie-meta">${escapeHtml(movie.duration)} min</div>
+              </div>
+            </button>
+          </article>`;
+      }).join('');
+    }
+
+    // ── Render showtimes panel ──
+    function renderShowtimesPanel(movieId, state) {
+      showtimesPanel.classList.remove('hidden');
+
+      const movie = currentMovies.find(m => m.id === movieId);
+      showtimesTitle.textContent   = movie ? movie.title : 'Showtimes';
+      showtimesSubtitle.textContent = 'Select a showtime to reserve your seats.';
+
+      if (state.loading) {
+        showtimesContent.innerHTML = `
+          <div class="list-card">
+            <div class="loading"><span class="spinner"></span><span>Loading showtimes…</span></div>
+          </div>`;
+        return;
+      }
+
+      if (state.error) {
+        showtimesContent.innerHTML = `<div class="banner banner-error">${escapeHtml(state.error)}</div>`;
+        return;
+      }
+
+      if (!state.shows || !state.shows.length) {
+        showtimesContent.innerHTML = `<div class="empty-state">No showtimes available for this movie.</div>`;
+        return;
+      }
+
+      showtimesContent.innerHTML = state.shows.map(show => {
+        const avail = availabilityClass(show.availableSeats);
+        return `
+          <div class="showtime-row">
+            <div class="showtime-left">
+              <div class="showtime-datetime">${escapeHtml(show.datetime)}</div>
+              <div class="showtime-meta">
+                <span class="${avail}">${escapeHtml(show.availableSeats)} seats available</span>
+              </div>
+            </div>
+            <div class="showtime-right">
+              <div class="showtime-price">LKR ${escapeHtml(show.price)}</div>
+              <a class="select-seats-btn" href="show.html?showId=${encodeURIComponent(show.id)}">
+                Select Seats →
+              </a>
+            </div>
+          </div>`;
+      }).join('');
+
+      // Smooth scroll to showtimes
+      setTimeout(() => showtimesPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+
+    // ── Expand movie ──
+    async function expandMovie(movieId) {
+      expandedMovieId = expandedMovieId === movieId ? null : movieId;
+      renderMovies(currentMovies);
+
+      if (expandedMovieId === null) {
+        showtimesPanel.classList.add('hidden');
+        return;
+      }
+
+      const cached = showtimeCache[movieId];
+      if (cached && (cached.shows.length || cached.error)) {
+        renderShowtimesPanel(movieId, cached);
+        return;
+      }
+
+      showtimeCache[movieId] = { shows: [], loading: true, error: '' };
+      renderShowtimesPanel(movieId, showtimeCache[movieId]);
+
+      try {
+        const shows = await getShows(movieId);
+        showtimeCache[movieId] = { shows, loading: false, error: '' };
+      } catch {
+        showtimeCache[movieId] = { shows: [], loading: false, error: 'Unable to load showtimes. Is the server running?' };
+      }
+
+      if (expandedMovieId === movieId) {
+        renderShowtimesPanel(movieId, showtimeCache[movieId]);
+      }
+    }
+
+    // ── Search & fetch ──
+    async function performSearch() {
+      const query = searchInput.value.trim();
+      try {
+        const movies = query ? await searchMovie(query) : await getMovies();
+        currentMovies = movies;
+
+        if (expandedMovieId && !movies.some(m => m.id === expandedMovieId)) {
+          expandedMovieId = null;
+        }
+
+        renderMovies(movies);
+        resultSummary.textContent = query
+          ? `${movies.length} result(s) for "${query}"`
+          : `${movies.length} movie(s) available`;
+
+        showBanner('', '');
+
+        if (expandedMovieId !== null && showtimeCache[expandedMovieId]) {
+          renderShowtimesPanel(expandedMovieId, showtimeCache[expandedMovieId]);
+        } else {
+          showtimesPanel.classList.add('hidden');
+        }
+      } catch {
+        currentMovies = [];
+        moviesGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">Unable to load movies right now.</div>`;
+        resultSummary.textContent = '';
+        showBanner(`Server at ${API_BASE_URL} is unreachable — make sure the backend is running.`, 'error');
+        showtimesPanel.classList.add('hidden');
+      }
+    }
+
+    function scheduleSearch() {
+      clearTimeout(debounceTimer);
+      setLoading(true);
+      debounceTimer = setTimeout(async () => {
+        await performSearch();
+        setLoading(false);
+      }, 280);
+    }
+
+    // ── Events ──
+    moviesGrid.addEventListener('click', e => {
+      const trigger = e.target.closest('.movie-card-trigger');
+      if (trigger) expandMovie(Number(trigger.dataset.movieId));
+    });
+
+    searchInput.addEventListener('input', scheduleSearch);
+    clearSearchBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      scheduleSearch();
+      searchInput.focus();
+    });
+
+    // ── Init ──
+    (async () => {
+      setLoading(true);
+      try {
+        const movies = await getMovies();
+        currentMovies = movies;
+        renderMovies(movies);
+        resultSummary.textContent = `${movies.length} movie(s) available`;
+      } catch {
+        currentMovies = [];
+        moviesGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">Unable to load movies. Start the server first.</div>`;
+        showBanner(`Cannot reach ${API_BASE_URL}. Please start server.exe and refresh.`, 'error');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  </script>
+</body>
+</html>

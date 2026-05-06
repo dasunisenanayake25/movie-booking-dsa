@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineBook — My Booking</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ================================================================
+           Booking Page Specific Styles
+           ================================================================ */
+        .booking-hero {
+            padding: 4rem 0 3rem;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(201, 168, 76, 0.05) 0%, transparent 70%);
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .hero-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .lookup-container {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .lookup-input-group {
+            display: flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-xl);
+            padding: 0.5rem;
+            box-shadow: var(--shadow-float), 0 0 20px rgba(201, 168, 76, 0.1);
+            transition: all 0.3s var(--transition);
+        }
+
+        .lookup-input-group:focus-within {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-float), 0 0 30px rgba(201, 168, 76, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .lookup-input {
+            flex: 1;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            font-size: 1.1rem;
+            padding: 0.75rem 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .lookup-btn {
+            padding: 0 1.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 700;
+        }
+
+        /* Ticket Design */
+        .ticket-wrapper {
+            max-width: 840px;
+            margin: 2rem auto 4rem;
+            perspective: 1000px;
+        }
+
+        .ticket {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--border-gold);
+            box-shadow: var(--shadow-float);
+            position: relative;
+            animation: ticketEntry 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @keyframes ticketEntry {
+            from {
+                opacity: 0;
+                transform: translateY(30px) rotateX(-10deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        /* Left Section (Main) */
+        .ticket-main {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+            border-right: 2px dashed var(--border-gold);
+            position: relative;
+        }
+
+        /* Perforation circles */
+        .ticket-main::before,
+        .ticket-main::after {
+            content: '';
+            position: absolute;
+            right: -11px;
+            width: 20px;
+            height: 20px;
+            background: var(--bg-deep);
+            border-radius: 50%;
+            z-index: 10;
+            border: 1px solid var(--border-gold);
+        }
+
+        .ticket-main::before {
+            top: -11px;
+        }
+
+        .ticket-main::after {
+            bottom: -11px;
+        }
+
+        .ticket-poster {
+            width: 140px;
+            height: 200px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+        }
+
+        .ticket-content {
+            flex: 1;
+        }
+
+        .ticket-movie-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            color: var(--gold-light);
+        }
+
+        .ticket-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-item span {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        /* Right Section (Stub) */
+        .ticket-stub {
+            width: 240px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(201, 168, 76, 0.05), transparent);
+            text-align: center;
+        }
+
+        .stub-id-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .stub-id-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .stub-id-value {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .stub-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 1rem 0;
+        }
+
+        .stub-status {
+            margin-bottom: 2rem;
+        }
+
+        /* Seat Section */
+        .ticket-bottom {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 1.25rem 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .seat-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .seat-chip {
+            background: rgba(201, 168, 76, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--gold-light);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        /* Empty State */
+        .empty-ticket-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-xl);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+
+        /* Status Pills & Banners */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .status-pill.confirmed {
+            background: rgba(111, 207, 151, 0.1);
+            border-color: rgba(111, 207, 151, 0.3);
+            color: #6fcf97;
+            box-shadow: 0 0 15px rgba(111, 207, 151, 0.1);
+        }
+
+        .status-pill.cancelled {
+            background: rgba(235, 87, 87, 0.1);
+            border-color: rgba(235, 87, 87, 0.3);
+            color: #eb5757;
+        }
+
+        .banner {
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            border: 1px solid transparent;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .banner-info {
+            background: rgba(45, 156, 219, 0.1);
+            border-color: rgba(45, 156, 219, 0.2);
+            color: #56ccf2;
+        }
+
+        .banner-success {
+            background: rgba(111, 207, 151, 0.1);
+            border-color: rgba(111, 207, 151, 0.2);
+            color: #6fcf97;
+        }
+
+        .banner-error {
+            background: rgba(235, 87, 87, 0.1);
+            border-color: rgba(235, 87, 87, 0.2);
+            color: #eb5757;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ticket {
+                flex-direction: column;
+            }
+
+            .ticket-main {
+                border-right: none;
+                border-bottom: 2px dashed var(--border-gold);
+                padding: 1.5rem;
+            }
+
+            .ticket-main::before,
+            .ticket-main::after {
+                display: none;
+            }
+
+            .ticket-stub {
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .ticket-poster {
+                width: 100px;
+                height: 140px;
+            }
+
+            .ticket-movie-title {
+                font-size: 1.5rem;
+            }
+
+            .ticket-info-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="page-header" role="banner">
+        <div class="container">
+            <div class="header-row">
+                <div class="brand" aria-label="CineBook Logo">
+                    <strong>🎬 CineBook</strong>
+                </div>
+                <nav class="top-nav" aria-label="Primary navigation">
+                    <a href="index.html">Movies</a>
+                    <a href="booking.html" class="active" aria-current="page">My Ticket</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="booking-hero">
+            <div class="container">
+                <h1 class="hero-title">Your Digital Ticket</h1>
+                <p class="hero-subtitle">Enter your Booking ID to retrieve your cinematic experience.</p>
+
+                <div class="lookup-container">
+                    <form id="lookup-form" class="lookup-input-group">
+                        <input id="booking-id" type="number" class="lookup-input" placeholder="e.g. 10042" required
+                            min="1">
+                        <button type="submit" class="button-primary lookup-btn">Retrieve</button>
+                    </form>
+                    <div id="feedback-banner" class="hidden" style="margin-top: 1rem;"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container" id="booking-container">
+            <!-- Initial State -->
+            <div id="empty-state" class="empty-ticket-state">
+                <div class="empty-icon">🎟️</div>
+                <h3>No Ticket Loaded</h3>
+                <p>Use the search above to find your booking details.</p>
+            </div>
+
+            <!-- Result Section -->
+            <div id="booking-result" class="ticket-wrapper hidden">
+                <div class="ticket">
+                    <div class="ticket-main">
+                        <div id="poster-wrapper" class="poster-container"
+                            style="width:140px; height:200px; flex-shrink:0;">
+                            <!-- Will be filled by JS -->
+                        </div>
+                        <div class="ticket-content">
+                            <h2 id="ticket-movie-title" class="ticket-movie-title">Movie Title</h2>
+                            <div class="ticket-info-grid">
+                                <div class="info-item">
+                                    <label>Customer</label>
+                                    <span id="ticket-customer">John Doe</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Date & Time</label>
+                                    <span id="ticket-datetime">2026-03-03 18:00</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Hall</label>
+                                    <span>Main Theatre (Screen 1)</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Booking ID</label>
+                                    <span id="ticket-id-display">#10042</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ticket-stub">
+                        <div class="stub-status">
+                            <span id="ticket-status" class="status-pill">Confirmed</span>
+                        </div>
+                        <div class="stub-price-box">
+                            <label class="stub-id-label">Total Amount</label>
+                            <div id="ticket-price" class="stub-price">LKR 0</div>
+                        </div>
+                        <button id="cancel-booking-button" class="cancel-outline" style="width: 100%;">
+                            Cancel Ticket
+                        </button>
+                    </div>
+                </div>
+                <div class="ticket-bottom">
+                    <label class="detail-label">Your Seats</label>
+                    <div id="seat-list" class="seat-tags"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cancel Confirmation Modal -->
+    <div id="cancel-modal" class="modal-overlay hidden" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-style: italic">Confirm Cancellation</h2>
+                    <p class="subtle" style="font-size: 0.85rem; margin-top: 0.25rem">
+                        This action cannot be undone. Please type your name to confirm.
+                    </p>
+                </div>
+                <button id="close-modal-button" class="button-outline">✕</button>
+            </div>
+
+            <form id="cancel-form">
+                <div class="form-group">
+                    <label id="confirm-label" for="confirm-name">Customer Name</label>
+                    <input id="confirm-name" type="text" placeholder="Type your name here..." required>
+                </div>
+
+                <div id="modal-feedback" class="hidden" style="margin-bottom: 1rem;"></div>
+
+                <hr class="divider">
+
+                <div class="list-actions">
+                    <button type="submit" class="danger-button">Confirm Cancellation</button>
+                    <button id="keep-booking-button" type="button" class="button-secondary">Keep Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            🎬 CineBook — Premium Cinema Booking System
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script>
+        // ── Constants & Helpers ──
+        const moviePosters = {
+            'joker': 'images/joker.png',
+            'titanic': 'images/titanic.png',
+            'the dark knight': 'images/dark_knight.png',
+            'dark knight': 'images/dark_knight.png',
+            'avatar': 'images/avatar.png',
+            'coco': 'images/coco.png',
+            'interstellar': 'images/interstellar.png',
+            'inception': 'images/inception.png',
+            'gladiator': 'images/gladiator.png',
+            'frozen': 'images/frozen.png',
+            'dune': 'images/dune.png'
+        };
+
+        function getPosterUrl(title) {
+            const key = String(title || '').toLowerCase().trim();
+            for (const m in moviePosters) {
+                if (key.includes(m) || m.includes(key)) return moviePosters[m];
+            }
+            return null;
+        }
+
+        function escapeHtml(v) {
+            return String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        // ── DOM Refs ──
+        const lookupForm = document.getElementById('lookup-form');
+        const bookingIdInput = document.getElementById('booking-id');
+        const feedbackBanner = document.getElementById('feedback-banner');
+        const emptyState = document.getElementById('empty-state');
+        const bookingResult = document.getElementById('booking-result');
+        const posterWrapper = document.getElementById('poster-wrapper');
+        const ticketMovieTitle = document.getElementById('ticket-movie-title');
+        const ticketCustomer = document.getElementById('ticket-customer');
+        const ticketDatetime = document.getElementById('ticket-datetime');
+        const ticketIdDisplay = document.getElementById('ticket-id-display');
+        const ticketStatus = document.getElementById('ticket-status');
+        const ticketPrice = document.getElementById('ticket-price');
+        const seatList = document.getElementById('seat-list');
+        const cancelBtn = document.getElementById('cancel-booking-button');
+        const cancelModal = document.getElementById('cancel-modal');
+        const cancelForm = document.getElementById('cancel-form');
+        const confirmNameInput = document.getElementById('confirm-name');
+        const modalFeedback = document.getElementById('modal-feedback');
+        const closeModalBtn = document.getElementById('close-modal-button');
+        const keepBookingBtn = document.getElementById('keep-booking-button');
+
+        let activeBooking = null;
+
+        function showFeedback(el, type, msg) {
+            if (!msg) { el.classList.add('hidden'); return; }
+            el.className = `banner banner-${type}`;
+            el.textContent = msg;
+            el.classList.remove('hidden');
+        }
+
+        function renderBooking(booking) {
+            activeBooking = booking;
+            emptyState.classList.add('hidden');
+            bookingResult.classList.remove('hidden');
+
+            const posterUrl = getPosterUrl(booking.movieTitle);
+            posterWrapper.innerHTML = posterUrl
+                ? `<img src="${posterUrl}" class="ticket-poster" alt="${escapeHtml(booking.movieTitle)}" style="width:100%; height:100%;">`
+                : `<div class="poster-placeholder" style="width:100%; height:100%; display:grid; place-items:center; font-size:3rem; background:var(--bg-raised); border-radius:var(--radius-md);">🎞️</div>`;
+
+            ticketMovieTitle.textContent = booking.movieTitle;
+            ticketCustomer.textContent = booking.customerName;
+            ticketDatetime.textContent = booking.datetime;
+            ticketIdDisplay.textContent = `#${booking.id}`;
+            ticketPrice.textContent = `LKR ${booking.totalPrice}`;
+
+            const isConfirmed = String(booking.status || '').toUpperCase() === 'CONFIRMED';
+            ticketStatus.textContent = isConfirmed ? 'Confirmed' : 'Cancelled';
+            ticketStatus.className = `status-pill ${isConfirmed ? 'confirmed' : 'cancelled'}`;
+            cancelBtn.disabled = !isConfirmed;
+            cancelBtn.style.opacity = isConfirmed ? '1' : '0.5';
+
+            seatList.innerHTML = (booking.seats || []).map(s =>
+                `<span class="seat-chip">Row ${s.row}, Seat ${s.col}</span>`
+            ).join('');
+
+            bookingResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // ── Events ──
+        lookupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = bookingIdInput.value.trim();
+            if (!id) return;
+
+            showFeedback(feedbackBanner, 'info', 'Searching for your ticket...');
+
+            try {
+                const booking = await getBooking(id);
+                renderBooking(booking);
+                showFeedback(feedbackBanner, 'success', 'Ticket retrieved!');
+                setTimeout(() => showFeedback(feedbackBanner, '', ''), 3000);
+            } catch (err) {
+                bookingResult.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                showFeedback(feedbackBanner, 'error', err.message || 'Booking not found.');
+            }
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            if (!activeBooking) return;
+            confirmNameInput.value = '';
+            showFeedback(modalFeedback, '', '');
+            cancelModal.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => cancelModal.classList.add('hidden'));
+        keepBookingBtn.addEventListener('click', () => cancelModal.classList.add('hidden'));
+
+        cancelForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = confirmNameInput.value.trim();
+            if (!name) return;
+
+            showFeedback(modalFeedback, 'info', 'Processing cancellation...');
+
+            try {
+                const result = await cancelBooking(activeBooking.id, name);
+                if (result.success) {
+                    cancelModal.classList.add('hidden');
+                    const updated = await getBooking(activeBooking.id);
+                    renderBooking(updated);
+                    showFeedback(feedbackBanner, 'success', 'Booking cancelled successfully.');
+                } else {
+                    showFeedback(modalFeedback, 'error', 'Incorrect name. Please verify the booking name.');
+                }
+            } catch (err) {
+                showFeedback(modalFeedback, 'error', err.message || 'Error cancelling booking.');
+            }
+        });
+    </script>
+</body>
+
+</html>
