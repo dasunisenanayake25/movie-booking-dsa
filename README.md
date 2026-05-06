@@ -65,4 +65,4 @@ g++ -I./include src/BSTMovieTitle.cpp src/BookingSystem.cpp src/ConsoleIO.cpp sr
 ```
 
 ## 📜 License
-Developed for educational purposes to demonstrate the practical application of custom Data Structures and Algorithms in a modern system architecture.
+Developed for educational purposes to demonstrate the practical application of custom Data Structures and Algorithms in a modern system architecture.
