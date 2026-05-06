@@ -1,10 +1,37 @@
 #include <iostream>
 #include <string>
+#include <cctype>
 using namespace std;
 
 #include "Menu.h"
 #include "ConsoleIO.h"
 #include "Constants.h"
+
+namespace
+{
+    int readShowOptionIndex(int showCount)
+    {
+        while (1)
+        {
+            std::string input = ConsoleIO::readLine("Enter show option (a-" + std::string(1, static_cast<char>('a' + showCount - 1)) + "): ");
+            if (input.size() != 1)
+            {
+                cout << "Error: Please enter a single letter option." << endl;
+                continue;
+            }
+
+            char choice = static_cast<char>(std::tolower(static_cast<unsigned char>(input[0])));
+            int index = choice - 'a';
+            if (index >= 0 && index < showCount)
+            {
+                return index;
+            }
+
+            cout << "Error: Invalid show option. Please choose from a-" 
+                 << static_cast<char>('a' + showCount - 1) << "." << endl;
+        }
+    }
+}
 
 void Menu::run(BookingSystem &system)
 {
@@ -51,7 +78,12 @@ void Menu::run(BookingSystem &system)
             {
                 continue;
             }
-            showId = ConsoleIO::readIntFromList("Enter show ID: ", movieShowIds, showCount);
+            cout << "Show options:" << endl;
+            for (int i = 0; i < showCount; i++)
+            {
+                cout << static_cast<char>('a' + i) << ") Show ID " << movieShowIds[i] << endl;
+            }
+            showId = movieShowIds[readShowOptionIndex(showCount)];
 
             while (1)
             {
