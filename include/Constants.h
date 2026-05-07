@@ -1,8 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-const int MAX_MOVIES = 12;
-const int MAX_SHOWS = 30;
+const int MAX_MOVIES = 20;
+const int MAX_SHOWS = 100;
 const int MAX_BOOKINGS = 500;
 const int MAX_WAIT = 100;
 

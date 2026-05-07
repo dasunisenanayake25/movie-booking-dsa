@@ -142,11 +142,12 @@ int BookingSystem::listShowsForMovieSorted(int movieId, int outShowIds[]) const
     for (i = 0; i < count; i++)
     {
         outShowIds[i] = store.shows[showIndices[i]].id;
-        cout << "Show ID: " << showLabelFromIndex(i)
-             << " | Datetime: " << store.shows[showIndices[i]].datetime
+        cout << (char)('a' + i) << ") "
+             << "Datetime: " << store.shows[showIndices[i]].datetime
              << " | Price: " << store.shows[showIndices[i]].price
              << " | Available Seats: " << showGrids[showIndices[i]].getAvailableCount()
-             << " | Waitlist: " << store.shows[showIndices[i]].waitCount << endl;
+             << " | Waitlist: " << store.shows[showIndices[i]].waitCount
+             << " [ID: " << store.shows[showIndices[i]].id << "]" << endl;
     }
 
     return count;
