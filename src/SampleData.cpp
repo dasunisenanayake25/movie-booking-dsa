@@ -31,7 +31,7 @@ void SampleData::load(Store &store)
 
     initStore(store);
 
-    for (i = 0; i < MAX_MOVIES; i++)
+    for (i = 0; i < 12; i++)
     {
         movieId = addMovie(store, titles[i], durations[i]);
         for (t = 0; t < 3; t++)

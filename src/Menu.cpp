@@ -49,9 +49,11 @@ void Menu::run(BookingSystem &system)
             showCount = system.listShowsForMovieSorted(movieId, movieShowIds);
             if (showCount == 0)
             {
+                ConsoleIO::pause();
                 continue;
             }
-            showId = ConsoleIO::readIntFromList("Enter show ID: ", movieShowIds, showCount);
+            char showLetter = ConsoleIO::readCharInRange("Enter show letter (a-" + std::string(1, 'a' + showCount - 1) + "): ", 'a', 'a' + showCount - 1);
+            showId = movieShowIds[showLetter - 'a'];
 
             while (1)
             {
