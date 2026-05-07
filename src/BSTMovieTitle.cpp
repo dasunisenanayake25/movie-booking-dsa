@@ -18,6 +18,7 @@ void BSTMovieTitle::insert(int movieId, const std::string &title)
     Node *newNode = new Node;
     newNode->movieId = movieId;
     newNode->title = title;
+    newNode->titleLower = toLower(title);
     newNode->left = NULL;
     newNode->right = NULL;
     newNode->parent = NULL;
@@ -36,9 +37,9 @@ void BSTMovieTitle::insert(int movieId, const std::string &title)
     while (current != NULL)
     {
         parentNode = current;
-        if (title < current->title)
+        if (newNode->titleLower < current->titleLower)
             compareResult = -1;
-        else if (title > current->title)
+        else if (newNode->titleLower > current->titleLower)
             compareResult = 1;
         else
             compareResult = 0;
@@ -75,13 +76,15 @@ void BSTMovieTitle::insert(int movieId, const std::string &title)
 int BSTMovieTitle::searchExact(const std::string &title) const
 {
     Node *current = root;
+    std::string searchTitle = toLower(title);
+
     while (current != NULL)
     {
-        if (title == current->title)
+        if (searchTitle == current->titleLower)
         {
             return current->movieId;
         }
-        if (title < current->title)
+        if (searchTitle < current->titleLower)
         {
             current = current->left;
         }

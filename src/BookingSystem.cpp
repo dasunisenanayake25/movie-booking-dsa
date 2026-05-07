@@ -7,6 +7,25 @@ using namespace std;
 #include "BookingSystem.h"
 #include "SampleData.h"
 
+namespace
+{
+std::string showLabelFromIndex(int index)
+{
+    std::string label;
+    int value = index;
+
+    do
+    {
+        int remainder = value % 26;
+        label.insert(label.begin(), static_cast<char>('a' + remainder));
+        value = (value / 26) - 1;
+    }
+    while (value >= 0);
+
+    return label;
+}
+}
+
 BookingSystem::BookingSystem()
 {
     int i;
