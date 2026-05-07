@@ -7,6 +7,25 @@ using namespace std;
 #include "BookingSystem.h"
 #include "SampleData.h"
 
+namespace
+{
+std::string showLabelFromIndex(int index)
+{
+    std::string label;
+    int value = index;
+
+    do
+    {
+        int remainder = value % 26;
+        label.insert(label.begin(), static_cast<char>('a' + remainder));
+        value = (value / 26) - 1;
+    }
+    while (value >= 0);
+
+    return label;
+}
+}
+
 BookingSystem::BookingSystem()
 {
     int i;
@@ -123,11 +142,12 @@ int BookingSystem::listShowsForMovieSorted(int movieId, int outShowIds[]) const
     for (i = 0; i < count; i++)
     {
         outShowIds[i] = store.shows[showIndices[i]].id;
-        cout << "Show ID: " << store.shows[showIndices[i]].id
-             << " | Datetime: " << store.shows[showIndices[i]].datetime
+        cout << (char)('a' + i) << ") "
+             << "Datetime: " << store.shows[showIndices[i]].datetime
              << " | Price: " << store.shows[showIndices[i]].price
              << " | Available Seats: " << showGrids[showIndices[i]].getAvailableCount()
-             << " | Waitlist: " << store.shows[showIndices[i]].waitCount << endl;
+             << " | Waitlist: " << store.shows[showIndices[i]].waitCount
+             << " [ID: " << store.shows[showIndices[i]].id << "]" << endl;
     }
 
     return count;

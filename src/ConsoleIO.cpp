@@ -74,6 +74,36 @@ int ConsoleIO::readIntFromList(const std::string &prompt, const int validIds[], 
     }
 }
 
+char ConsoleIO::readCharInRange(const std::string &prompt, char minChar, char maxChar)
+{
+    std::string input;
+    char choice;
+
+    while (1)
+    {
+        cout << prompt;
+        std::getline(cin, input);
+
+        if (input.length() != 1)
+        {
+            cout << "Error: Please enter a single character." << endl;
+            continue;
+        }
+
+        choice = input[0];
+        if (choice >= 'A' && choice <= 'Z')
+            choice = choice - 'A' + 'a';
+
+        if (choice < minChar || choice > maxChar)
+        {
+            cout << "Error: Please enter a character between " << minChar << " and " << maxChar << "." << endl;
+            continue;
+        }
+
+        return choice;
+    }
+}
+
 std::string ConsoleIO::readLine(const std::string &prompt)
 {
     std::string input;

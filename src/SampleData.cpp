@@ -18,10 +18,12 @@ void SampleData::load(Store &store)
         "Coco",
         "Frozen",
         "Joker",
-        "Dune"};
+        "Dune",
+        "Michael",
+        "Jurassic World: Fallen Kingdom"};
 
-    const int durations[MAX_MOVIES] = {148, 169, 152, 162, 194, 155, 105, 102, 122, 155};
-    const int basePrices[MAX_MOVIES] = {1200, 1400, 1300, 1500, 1250, 1350, 1100, 1000, 1450, 1600};
+    const int durations[MAX_MOVIES] = {148, 169, 152, 162, 194, 155, 105, 102, 122, 155, 135, 128};
+    const int basePrices[MAX_MOVIES] = {1200, 1400, 1300, 1500, 1250, 1350, 1100, 1000, 1450, 1600, 1300, 1500};
 
     int i;
     int t;
@@ -29,7 +31,7 @@ void SampleData::load(Store &store)
 
     initStore(store);
 
-    for (i = 0; i < MAX_MOVIES; i++)
+    for (i = 0; i < 12; i++)
     {
         movieId = addMovie(store, titles[i], durations[i]);
         for (t = 0; t < 3; t++)
@@ -44,17 +46,17 @@ void SampleData::load(Store &store)
     {
         int bi = store.bookingCount;
 
-        store.bookings[bi].id            = store.nextBookingId;
-        store.bookings[bi].showId        = store.shows[0].id;
-        store.bookings[bi].customerName  = "Sample Customer";
-        store.bookings[bi].seatCount     = 3;
-        store.bookings[bi].seatR[0]      = 4;
-        store.bookings[bi].seatC[0]      = 5;
-        store.bookings[bi].seatR[1]      = 4;
-        store.bookings[bi].seatC[1]      = 6;
-        store.bookings[bi].seatR[2]      = 5;
-        store.bookings[bi].seatC[2]      = 5;
-        store.bookings[bi].status        = STATUS_CONFIRMED;
+        store.bookings[bi].id = store.nextBookingId;
+        store.bookings[bi].showId = store.shows[0].id;
+        store.bookings[bi].customerName = "Sample Customer";
+        store.bookings[bi].seatCount = 3;
+        store.bookings[bi].seatR[0] = 4;
+        store.bookings[bi].seatC[0] = 5;
+        store.bookings[bi].seatR[1] = 4;
+        store.bookings[bi].seatC[1] = 6;
+        store.bookings[bi].seatR[2] = 5;
+        store.bookings[bi].seatC[2] = 5;
+        store.bookings[bi].status = STATUS_CONFIRMED;
 
         store.bookingCount++;
         store.nextBookingId++;
