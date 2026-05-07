@@ -3,63 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CineBook — Now Showing</title>
+  <title>CineBook — Unlimited Movies, Anytime.</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* ── Hero ── */
-    .hero-section {
+
+    /* ════════════════════════════════════════
+       HERO SECTION — full-bleed Netflix style
+    ════════════════════════════════════════ */
+    .hero-fullbleed {
       position: relative;
-      overflow: hidden;
-      border-radius: var(--radius-xl);
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      min-height: 300px;
-      display: grid;
+      min-height: 100vh; margin-top: 0;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      text-align: center;
+      padding: 0;
     }
 
-    .hero-bg {
+    /* Poster collage background */
+    .hero-poster-bg {
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(201,168,76,0.12), transparent),
-        radial-gradient(ellipse 50% 80% at 100% 50%, rgba(192,57,43,0.07), transparent),
-        linear-gradient(180deg, rgba(20,20,20,0) 0%, rgba(8,8,8,0.8) 100%);
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 4px;
+      transform: scale(1.04);
+      z-index: 0;
       pointer-events: none;
     }
 
-    .hero-bg .hero-noise {
+    .hero-poster-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+      filter: saturate(1.1);
+    }
+
+    /* Gradient overlays on top of collage */
+    .hero-overlay {
       position: absolute;
       inset: 0;
+      z-index: 1;
       background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.035), transparent 40%),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.02), transparent 45%),
-        radial-gradient(circle at 45% 85%, rgba(255,255,255,0.02), transparent 45%);
-      opacity: 0.8;
-      mix-blend-mode: screen;
+        radial-gradient(ellipse 75% 55% at 50% 40%, rgba(8,8,8,0.55) 0%, transparent 70%),
+        linear-gradient(to bottom,
+          rgba(8,8,8,0.55) 0%,
+          rgba(8,8,8,0.20) 20%,
+          rgba(8,8,8,0.20) 65%,
+          rgba(8,8,8,0.95) 88%,
+          rgba(8,8,8,1.00) 100%
+        ),
+        linear-gradient(to right, rgba(8,8,8,0.6) 0%, transparent 15%, transparent 85%, rgba(8,8,8,0.6) 100%);
     }
 
-    /* Film strip decorative lines */
-    .hero-bg::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      opacity: 0.6;
-    }
-
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
-    }
-
-    .hero-inner {
+    /* Hero content */
+    .hero-body {
       position: relative;
-      padding: 2.5rem 2rem;
+      z-index: 2;
+      max-width: 640px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
     }
 
     .hero-eyebrow {
@@ -68,211 +78,152 @@
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--gold);
-      opacity: 0.8;
     }
 
-    .hero-content {
-      display: grid;
-      grid-template-columns: 1.35fr 0.85fr;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .hero-left {
-      display: grid;
-      gap: 1rem;
-      max-width: 720px;
-    }
-
-    .hero-right {
-      display: grid;
-      gap: 0.75rem;
-      justify-items: stretch;
-    }
-
-    .hero-visual {
-      position: relative;
-      min-height: 230px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(28,28,28,0.45);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.55);
-    }
-
-    .hero-visual::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(201,168,76,0.20), transparent 45%),
-        radial-gradient(circle at 85% 35%, rgba(192,57,43,0.14), transparent 50%),
-        linear-gradient(90deg, rgba(20,20,20,0.95) 0%, rgba(20,20,20,0.65) 35%, rgba(20,20,20,0.10) 100%);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .hero-visual::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 0%, rgba(8,8,8,0.85) 92%);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .poster-stack {
-      position: absolute;
-      inset: -10px;
-      display: grid;
-      place-items: center;
-      transform: rotate(-6deg);
-      z-index: 1;
-      opacity: 0.95;
-      filter: saturate(1.05) contrast(1.03);
-    }
-
-    .poster-stack img {
-      width: 135px;
-      aspect-ratio: 2 / 3;
-      height: auto;
-      object-fit: cover;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 30px 70px rgba(0,0,0,0.65);
-      background: var(--bg-raised);
-    }
-
-    .poster-stack .p1 { transform: translate(-70px, 22px) rotate(-10deg); opacity: 0.92; }
-    .poster-stack .p2 { transform: translate(10px, -10px) rotate(4deg);  opacity: 0.98; }
-    .poster-stack .p3 { transform: translate(88px, 26px) rotate(12deg);  opacity: 0.90; }
-
-    .hero-visual-label {
-      position: absolute;
-      left: 14px;
-      bottom: 14px;
-      right: 14px;
-      z-index: 3;
-      display: grid;
-      gap: 0.25rem;
-    }
-
-    .hero-visual-kicker {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(240,236,228,0.75);
-    }
-
-    .hero-visual-title {
+    .hero-headline {
       font-family: var(--font-display);
+      font-size: clamp(2.4rem, 6vw, 4rem);
       font-weight: 900;
-      font-style: italic;
-      letter-spacing: -0.01em;
-      font-size: 1.15rem;
-      color: var(--text-primary);
-      text-shadow: 0 20px 40px rgba(0,0,0,0.55);
-    }
-
-    .hero-card {
-      background: rgba(28,28,28,0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-lg);
-      padding: 1.1rem 1.1rem;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-      backdrop-filter: blur(14px) saturate(160%);
-      -webkit-backdrop-filter: blur(14px) saturate(160%);
-    }
-
-    .hero-card-title {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 700;
-      font-size: 1.05rem;
-      margin: 0 0 0.35rem 0;
-    }
-
-    .hero-points {
-      display: grid;
-      gap: 0.4rem;
-      margin: 0.75rem 0 0;
-      padding: 0;
-      list-style: none;
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-    }
-
-    .hero-points li {
-      display: flex;
-      gap: 0.5rem;
-      align-items: flex-start;
-    }
-
-    .hero-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      margin-top: 0.35rem;
-      background: rgba(201,168,76,0.35);
-      border: 1px solid rgba(201,168,76,0.5);
-      box-shadow: 0 0 14px rgba(201,168,76,0.16);
-      flex-shrink: 0;
-    }
-
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 900;
-      font-style: italic;
-      color: var(--text-primary);
       line-height: 1.1;
+      color: var(--text-primary);
       margin: 0;
     }
 
-    .hero-subtitle {
-      max-width: 50ch;
-      font-size: 0.9rem;
+    .hero-sub {
+      font-size: 1.05rem;
       color: var(--text-secondary);
+      max-width: 44ch;
+      margin: 0;
     }
 
-    .hero-search-wrap {
-      display: grid;
-      gap: 0.4rem;
-      width: 100%;
-    }
-
-    .search-row {
+    .hero-cta-row {
       display: flex;
-      gap: 0.5rem;
-    }
-
-    .search-row input {
-      flex: 1;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
+      gap: 0.75rem;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
     }
 
-    .hero-actions .button-primary,
-    .hero-actions .button-secondary,
-    .hero-actions .button-outline {
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
+    .hero-cta-row input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      height: 48px;
+      padding: 0 1.1rem;
+      background: rgba(20,20,20,0.85);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
     }
 
-    .hero-hint {
-      color: var(--text-muted);
+    .btn-get-started {
+      height: 48px;
+      padding: 0 1.5rem;
+      background: var(--red);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-get-started:hover {
+      background: var(--red-bright);
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    .hero-fine {
       font-size: 0.78rem;
+      color: var(--text-muted);
       font-family: var(--font-mono);
-      letter-spacing: 0.01em;
     }
 
-    /* ── Movie Cards ── */
+    /* ════════════════════════════════════════
+       SECTION WRAPPER (below hero)
+    ════════════════════════════════════════ */
+    .content-sections {
+      background: var(--bg-deep);
+      position: relative;
+      z-index: 5;
+    }
+
+    .section-block {
+      padding: 3.5rem 0;
+      border-bottom: 8px solid var(--bg-surface);
+    }
+
+    .section-label {
+      font-size: 1.55rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    /* ════════════════════════════════════════
+       TRENDING — horizontal numbered scroll
+    ════════════════════════════════════════ */
+    .trending-scroll {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding: 1rem 0 1.25rem;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .trending-scroll::-webkit-scrollbar { display: none; }
+
+    .trending-item {
+      position: relative;
+      flex: 0 0 auto;
+      width: 140px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .trending-item:hover { transform: scale(1.04); }
+
+    .trending-rank {
+      position: absolute;
+      left: -18px;
+      bottom: 8px;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 5.5rem;
+      line-height: 1;
+      color: var(--bg-deep);
+      -webkit-text-stroke: 3px rgba(255,255,255,0.55);
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .trending-poster {
+      width: 100%;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    /* ════════════════════════════════════════
+       NOW SHOWING — grid (all movies)
+    ════════════════════════════════════════ */
+    .movies-section { padding: 3rem 0; border-bottom: 8px solid var(--bg-surface); }
+
+    /* reuse .card-grid from style.css */
+
+    /* movie card adjustments */
     .movie-card-trigger {
       width: 100%;
       padding: 0;
@@ -285,7 +236,7 @@
     }
 
     .poster-container {
-      aspect-ratio: 2 / 3;
+      aspect-ratio: 2/3;
       border-radius: var(--radius-md);
       background: var(--bg-raised);
       border: 1px solid var(--border);
@@ -315,23 +266,13 @@
     .poster-placeholder {
       width: 100%;
       height: 100%;
-      background: repeating-linear-gradient(
-        -45deg,
-        var(--bg-raised),
-        var(--bg-raised) 10px,
-        var(--bg-hover) 10px,
-        var(--bg-hover) 20px
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      color: var(--text-muted);
+      background: repeating-linear-gradient(-45deg, var(--bg-raised), var(--bg-raised) 10px, var(--bg-hover) 10px, var(--bg-hover) 20px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; color: var(--text-muted);
     }
 
-    /* Skeleton */
     .poster-skeleton {
-      aspect-ratio: 2 / 3;
+      aspect-ratio: 2/3;
       border-radius: var(--radius-md);
       background: var(--bg-raised);
       border: 1px solid var(--border);
@@ -346,23 +287,21 @@
 
     .line-skeleton.short { width: 55%; margin-bottom: 0.5rem; }
 
+    .skeleton-card { position: relative; overflow: hidden; }
+
     .skeleton-card::after {
       content: '';
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       transform: translateX(-120%);
       background: linear-gradient(90deg, transparent, rgba(201,168,76,0.05), transparent);
       animation: shimmer 1.4s infinite;
     }
 
-    .skeleton-card { position: relative; overflow: hidden; }
-
     @keyframes shimmer { to { transform: translateX(120%); } }
 
     .movie-card-body {
       padding: 0.75rem 0.25rem 0.25rem;
-      display: grid;
-      gap: 0.2rem;
+      display: grid; gap: 0.2rem;
     }
 
     .movie-title {
@@ -372,17 +311,16 @@
       line-height: 1.25;
     }
 
-    .movie-meta {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
+    .movie-meta { font-size: 0.78rem; color: var(--text-muted); }
 
     .movie-card-selected .poster-container {
       border-color: var(--border-hover);
       box-shadow: var(--shadow-gold);
     }
 
-    /* ── Showtimes ── */
+    /* ════════════════════════════════════════
+       SHOWTIMES PANEL
+    ════════════════════════════════════════ */
     .showtime-row {
       display: flex;
       align-items: center;
@@ -396,85 +334,295 @@
     }
 
     .showtime-row:hover { border-color: var(--border-hover); }
-
     .showtime-left { display: grid; gap: 0.2rem; }
 
     .showtime-datetime {
-      font-weight: 600;
-      color: var(--text-primary);
-      font-size: 0.9rem;
+      font-weight: 600; color: var(--text-primary); font-size: 0.9rem;
     }
 
     .showtime-meta { font-size: 0.82rem; }
 
     .showtime-right {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap; justify-content: flex-end;
     }
 
     .showtime-price {
-      font-family: var(--font-mono);
-      font-weight: 600;
-      color: var(--gold);
-      font-size: 0.9rem;
-      white-space: nowrap;
+      font-family: var(--font-mono); font-weight: 600; color: var(--gold); font-size: 0.9rem; white-space: nowrap;
     }
 
     .select-seats-btn {
       background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-      color: #0a0a0a;
-      font-weight: 700;
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-md);
-      font-size: 0.82rem;
-      border: none;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      transition: all 0.2s var(--transition);
-      letter-spacing: 0.02em;
-      white-space: nowrap;
+      color: #0a0a0a; font-weight: 700; padding: 0.5rem 1rem;
+      border-radius: var(--radius-md); font-size: 0.82rem; border: none;
+      text-decoration: none; display: inline-flex; align-items: center;
+      transition: all 0.2s var(--transition); letter-spacing: 0.02em; white-space: nowrap;
     }
 
     .select-seats-btn:hover {
       background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #0a0a0a;
-      box-shadow: 0 0 16px var(--gold-glow);
-      transform: translateY(-1px);
-    }
-
-    /* ── Summary row ── */
-    .summary-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      color: #0a0a0a; box-shadow: 0 0 16px var(--gold-glow); transform: translateY(-1px);
     }
 
     #result-summary {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin: 0;
+    }
+
+    /* ════════════════════════════════════════
+       REASONS CARDS
+    ════════════════════════════════════════ */
+    .reasons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .reason-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.25rem 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .reason-card:hover {
+      border-color: var(--border-gold);
+      transform: translateY(-3px);
+    }
+
+    .reason-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .reason-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+
+    .reason-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .reason-card-glow {
+      position: absolute;
+      bottom: -20px; right: -20px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--gold-glow);
+      filter: blur(25px);
+      pointer-events: none;
+    }
+
+    /* ════════════════════════════════════════
+       FAQ ACCORDION
+    ════════════════════════════════════════ */
+    .faq-list {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .faq-item:hover { border-color: var(--border-gold); }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 1.1rem 1.25rem;
+      text-align: left;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      transition: color 0.2s;
+    }
+
+    .faq-question:hover { color: var(--gold); }
+
+    .faq-plus {
+      font-size: 1.5rem;
+      font-weight: 300;
       color: var(--text-muted);
+      transition: transform 0.3s, color 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .faq-item.open .faq-plus {
+      transform: rotate(45deg);
+      color: var(--gold);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
+      padding: 0 1.25rem;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding: 0 1.25rem 1.1rem;
+    }
+
+    .faq-answer p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
       margin: 0;
     }
 
-    /* ── Responsive ── */
+    /* ════════════════════════════════════════
+       BOTTOM CTA STRIP
+    ════════════════════════════════════════ */
+    .bottom-cta {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      border-bottom: 8px solid var(--bg-surface);
+    }
+
+    .bottom-cta p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .bottom-cta-row {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .bottom-cta-row input[type="text"] {
+      flex: 1; min-width: 200px; height: 48px;
+      background: rgba(20,20,20,0.9);
+    }
+
+    /* ════════════════════════════════════════
+       FOOTER LINKS
+    ════════════════════════════════════════ */
+    .footer-full {
+      padding: 3rem 0 2rem;
+      background: var(--bg-deep);
+    }
+
+    .footer-contact {
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-contact a { color: var(--text-muted); text-decoration: underline; }
+
+    .footer-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links-grid a {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .footer-links-grid a:hover { color: var(--text-secondary); }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ════════════════════════════════════════
+       HEADER overrides for this page
+    ════════════════════════════════════════ */
+    /* Override sticky from style.css — float transparently over hero */
+    .page-header.page-header-transparent {
+      background: linear-gradient(to bottom, rgba(8,8,8,0.88) 0%, transparent 100%) !important;
+      border-bottom: none !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 20 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* Push body top to 0 so hero starts right at the very top */
+    body {
+      padding-top: 0 !important;
+    }
+
+    /* Ensure grain overlay (body::before from style.css) doesn't block poster images */
+    body::before {
+      z-index: 2 !important;
+      pointer-events: none;
+    }
+
+    /* ════════════════════════════════════════
+       SEARCH ROW (inside section)
+    ════════════════════════════════════════ */
+    .inline-search-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+      max-width: 480px;
+    }
+
+    .inline-search-row input { flex: 1; }
+
+    .summary-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════ */
     @media (max-width: 640px) {
-      .hero-inner { padding: 1.75rem 1.25rem; }
-      .hero-content { grid-template-columns: 1fr; }
-      .hero-right { display: none; }
-      .search-row { flex-direction: column; }
+      .hero-headline { font-size: 2rem; }
+      .hero-sub { font-size: 0.9rem; }
+      .trending-rank { font-size: 4rem; }
+      .trending-item { width: 110px; }
+      .reasons-grid { grid-template-columns: 1fr 1fr; }
+      .hero-poster-bg { grid-template-columns: repeat(4,1fr); }
       .showtime-right { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
 
-  <header class="page-header" role="banner">
+  <!-- ═══ HEADER (transparent over hero) ═══ -->
+  <header class="page-header page-header-transparent" role="banner">
     <div class="container">
       <div class="header-row">
         <div class="brand" aria-label="CineBook">
@@ -488,136 +636,278 @@
     </div>
   </header>
 
-  <main class="container page-content">
+  <!-- ═══ HERO ═══ -->
+  <section class="hero-fullbleed" aria-label="Welcome to CineBook">
 
-    <!-- Hero -->
-    <section class="hero-section" aria-label="Welcome">
-      <div class="hero-bg"><div class="hero-noise" aria-hidden="true"></div></div>
-      <div class="hero-inner">
-        <div class="hero-content">
-          <div class="hero-left">
-            <div class="hero-eyebrow">Now Playing</div>
-            <h1 class="hero-title">Find your perfect seat.</h1>
-            <p class="hero-subtitle">Search a movie, open showtimes, then pick seats — fast, clean, and built with custom DSA under the hood.</p>
+    <!-- Poster collage background -->
+    <div class="hero-poster-bg" aria-hidden="true">
+      <img src="images/avatar.png"        alt="">
+      <img src="images/coco.png"          alt="">
+      <img src="images/dune.png"          alt="">
+      <img src="images/frozen.png"        alt="">
+      <img src="images/gladiator.png"     alt="">
+      <img src="images/inception.png"     alt="">
+      <img src="images/interstellar.png"  alt="">
+      <img src="images/joker.png"         alt="">
+      <img src="images/jurassic_world.png" alt="">
+      <img src="images/michael.png"       alt="">
+      <img src="images/dark_knight.png"   alt="">
+      <img src="images/titanic.png"       alt="">
+      <img src="images/avatar.png"        alt="">
+      <img src="images/dune.png"          alt="">
+      <img src="images/inception.png"     alt="">
+      <img src="images/gladiator.png"     alt="">
+      <img src="images/frozen.png"        alt="">
+      <img src="images/joker.png"         alt="">
+      <img src="images/coco.png"          alt="">
+      <img src="images/interstellar.png"  alt="">
+      <img src="images/michael.png"       alt="">
+      <img src="images/titanic.png"        alt="">
+      <img src="images/dark_knight.png"   alt="">
+      <img src="images/joker.png"         alt="">
+      <img src="images/inception.png"     alt="">
+      <img src="images/avatar.png"        alt="">
+      <img src="images/dune.png"          alt="">
+    </div>
 
-            <div class="hero-search-wrap" role="search">
-              <div class="search-row">
-                <input
-                  id="search-input"
-                  type="search"
-                  placeholder="Search by movie title..."
-                  autocomplete="off"
-                  aria-label="Search movies"
-                >
-                <button id="clear-search" type="button" class="button-secondary" aria-label="Clear search">
-                  Clear
-                </button>
-              </div>
-              <div class="hero-actions">
-                <a class="button-primary" href="#movies">Browse movies</a>
-                <a class="button-outline" href="booking.html">My booking</a>
-                <span class="hero-hint">Tip: try “Interstellar”, “Dune”, “Joker”…</span>
-              </div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="hero-body">
+      <div class="hero-eyebrow">Now Playing</div>
+      <h1 class="hero-headline">Unlimited movies,<br>at your theater.</h1>
+      <p class="hero-sub">Book seats in seconds. Search a film, pick your showtime, choose your seat — done.</p>
+      <div class="hero-cta-row">
+        <input
+          id="hero-search"
+          type="text"
+          placeholder='Try "Interstellar", "Dune", "Joker"…'
+          autocomplete="off"
+          aria-label="Search movies"
+        >
+        <a class="btn-get-started" href="#movies">Browse Movies →</a>
+      </div>
+      <p class="hero-fine">No subscription needed. Cancel anytime.</p>
+    </div>
+  </section>
+
+  <!-- ═══ ALL CONTENT BELOW HERO ═══ -->
+  <div class="content-sections">
+
+    <!-- TRENDING NOW -->
+    <section class="section-block" aria-label="Trending Now">
+      <div class="container">
+        <div class="section-label">Trending Now</div>
+        <div class="trending-scroll" id="trending-scroll" role="list">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- NOW SHOWING (full grid + search) -->
+    <section id="movies" class="movies-section" aria-label="Now Showing">
+      <div class="container">
+        <div class="section-heading" style="flex-direction:column;align-items:flex-start;gap:0.75rem">
+          <div class="section-label">Now Showing</div>
+
+          <!-- Inline search -->
+          <div class="inline-search-row" role="search">
+            <input
+              id="search-input"
+              type="search"
+              placeholder="Search by movie title..."
+              autocomplete="off"
+              aria-label="Search movies"
+            >
+            <button id="clear-search" type="button" class="button-secondary" aria-label="Clear search">Clear</button>
+            <span id="loading-indicator" class="loading hidden" aria-live="polite">
+              <span class="spinner" aria-hidden="true"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="summary-bar">
+          <p id="result-summary" class="status-text">Loading movies...</p>
+        </div>
+
+        <div id="page-feedback" class="hidden" role="alert" style="margin-bottom:1rem"></div>
+
+        <div id="movies-grid" class="card-grid" aria-live="polite">
+          <!-- Skeletons -->
+          <article class="card skeleton-card" aria-hidden="true"><div class="poster-skeleton"></div><div class="line-skeleton"></div><div class="line-skeleton short"></div></article>
+          <article class="card skeleton-card" aria-hidden="true"><div class="poster-skeleton"></div><div class="line-skeleton"></div><div class="line-skeleton short"></div></article>
+          <article class="card skeleton-card" aria-hidden="true"><div class="poster-skeleton"></div><div class="line-skeleton"></div><div class="line-skeleton short"></div></article>
+          <article class="card skeleton-card" aria-hidden="true"><div class="poster-skeleton"></div><div class="line-skeleton"></div><div class="line-skeleton short"></div></article>
+          <article class="card skeleton-card" aria-hidden="true"><div class="poster-skeleton"></div><div class="line-skeleton"></div><div class="line-skeleton short"></div></article>
+          <article class="card skeleton-card" aria-hidden="true"><div class="poster-skeleton"></div><div class="line-skeleton"></div><div class="line-skeleton short"></div></article>
+        </div>
+
+        <!-- Showtimes panel -->
+        <section id="showtimes-panel" class="panel hidden" style="margin-top:1.5rem" aria-label="Showtimes">
+          <div class="section-heading">
+            <div>
+              <h2 id="showtimes-title">Showtimes</h2>
+              <p id="showtimes-subtitle" class="subtle">Select a showtime to choose your seats.</p>
             </div>
+          </div>
+          <div id="showtimes-content" class="stack-list"></div>
+        </section>
+      </div>
+    </section>
 
-            <div id="page-feedback" class="hidden" role="alert"></div>
+    <!-- MORE REASONS -->
+    <section class="section-block" aria-label="More Reasons to Join">
+      <div class="container">
+        <div class="section-label">More Reasons to Book</div>
+        <div class="reasons-grid">
+          <div class="reason-card">
+            <span class="reason-icon">🎭</span>
+            <div class="reason-title">Premium Screens</div>
+            <p class="reason-desc">Dolby Atmos, IMAX, and 4K HDR screens at every venue.</p>
+            <div class="reason-card-glow"></div>
+          </div>
+          <div class="reason-card">
+            <span class="reason-icon">⚡</span>
+            <div class="reason-title">Instant Booking</div>
+            <p class="reason-desc">Pick your seats live on the grid and confirm in seconds.</p>
+            <div class="reason-card-glow"></div>
+          </div>
+          <div class="reason-card">
+            <span class="reason-icon">📱</span>
+            <div class="reason-title">Anywhere Access</div>
+            <p class="reason-desc">Book on your phone, tablet, laptop, or smart TV.</p>
+            <div class="reason-card-glow"></div>
+          </div>
+          <div class="reason-card">
+            <span class="reason-icon">🎟️</span>
+            <div class="reason-title">Family Profiles</div>
+            <p class="reason-desc">Manage bookings for the whole family from one account.</p>
+            <div class="reason-card-glow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section-block" aria-label="Frequently Asked Questions">
+      <div class="container" style="max-width:860px">
+        <div class="section-label">Frequently Asked Questions</div>
+        <div class="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              What is CineBook?
+              <span class="faq-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>CineBook is a fast, modern cinema booking system. Search any movie currently showing, view real-time seat availability, and reserve your perfect spot — all in a few clicks.</p>
+            </div>
           </div>
 
-          <aside class="hero-right" aria-label="Quick info">
-            <div class="hero-visual" aria-label="Featured posters">
-              <div class="poster-stack" aria-hidden="true">
-                <img class="p1" src="images/interstellar.png" alt="" loading="lazy">
-                <img class="p2" src="images/dune.png" alt="" loading="lazy">
-                <img class="p3" src="images/joker.png" alt="" loading="lazy">
-              </div>
-              <div class="hero-visual-label">
-                <div class="hero-visual-kicker">Featured</div>
-                <div class="hero-visual-title">Now streaming in your theater</div>
-              </div>
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              How much does it cost?
+              <span class="faq-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Ticket prices vary by showtime and seating tier. Prices are shown in LKR when you open a movie's showtimes. There are no hidden booking fees.</p>
             </div>
-            <div class="hero-card">
-              <h3 class="hero-card-title">Tonight’s flow</h3>
-              <p class="subtle" style="margin:0">From discovery to checkout in a few clicks.</p>
-              <ul class="hero-points">
-                <li><span class="hero-dot" aria-hidden="true"></span><span>Pick a movie → open showtimes</span></li>
-                <li><span class="hero-dot" aria-hidden="true"></span><span>Select seats on the live grid</span></li>
-                <li><span class="hero-dot" aria-hidden="true"></span><span>Confirm booking and save ticket ID</span></li>
-              </ul>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              Where can I use CineBook?
+              <span class="faq-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>CineBook works on any modern browser — desktop, tablet, or phone. No app install needed. Just open and book.</p>
             </div>
-          </aside>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              How do I cancel a booking?
+              <span class="faq-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Go to <strong>My Booking</strong>, enter your Ticket ID, and select Cancel. Cancellations are processed instantly and your seats are released immediately.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              What movies can I watch?
+              <span class="faq-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>The Now Showing grid above lists every film currently available. The catalogue updates in real-time from our server — refresh anytime to see the latest titles.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              Is CineBook good for kids?
+              <span class="faq-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Absolutely! Family-friendly titles are clearly listed. You can book multiple seats together so the whole family sits side by side.</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
 
-    <!-- Movies grid -->
-    <section id="movies" class="panel" aria-label="Movies">
-      <div class="section-heading">
-        <h2>Now Showing</h2>
-        <span id="loading-indicator" class="loading hidden" aria-live="polite">
-          <span class="spinner" aria-hidden="true"></span>
-          <span>Loading...</span>
-        </span>
+    <!-- BOTTOM CTA -->
+    <div class="bottom-cta">
+      <p>Ready to watch? Search a movie or browse all titles below.</p>
+      <div class="bottom-cta-row">
+        <input id="bottom-search" type="text" placeholder="Search movies..." aria-label="Search movies">
+        <a class="btn-get-started" href="#movies">Get Started →</a>
       </div>
+    </div>
 
-      <div class="summary-bar" style="margin-bottom:1rem;">
-        <p id="result-summary" class="status-text">Loading movies...</p>
-      </div>
-
-      <div id="movies-grid" class="card-grid" aria-live="polite">
-        <!-- Skeleton placeholders -->
-        <article class="card skeleton-card" aria-hidden="true">
-          <div class="poster-skeleton"></div>
-          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
-        </article>
-        <article class="card skeleton-card" aria-hidden="true">
-          <div class="poster-skeleton"></div>
-          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
-        </article>
-        <article class="card skeleton-card" aria-hidden="true">
-          <div class="poster-skeleton"></div>
-          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
-        </article>
-        <article class="card skeleton-card" aria-hidden="true">
-          <div class="poster-skeleton"></div>
-          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
-        </article>
-        <article class="card skeleton-card" aria-hidden="true">
-          <div class="poster-skeleton"></div>
-          <div class="line-skeleton"></div><div class="line-skeleton short"></div>
-        </article>
-      </div>
-    </section>
-
-    <!-- Showtimes panel -->
-    <section id="showtimes-panel" class="panel hidden" aria-label="Showtimes">
-      <div class="section-heading">
-        <div>
-          <h2 id="showtimes-title">Showtimes</h2>
-          <p id="showtimes-subtitle" class="subtle">Select a showtime to choose your seats.</p>
+    <!-- FOOTER -->
+    <footer class="footer-full" role="contentinfo">
+      <div class="container">
+        <p class="footer-contact">Questions? <a href="#">Contact us</a></p>
+        <div class="footer-links-grid">
+          <a href="#">FAQ</a>
+          <a href="#">Help Centre</a>
+          <a href="#">Account</a>
+          <a href="#">Media Centre</a>
+          <a href="#">Investor Relations</a>
+          <a href="#">Jobs</a>
+          <a href="#">Ways to Book</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Privacy</a>
+          <a href="#">Cookie Preferences</a>
+          <a href="#">Corporate Information</a>
+          <a href="#">Contact Us</a>
+          <a href="#">Legal Notices</a>
+          <a href="#">Only on CineBook</a>
         </div>
+        <p class="footer-copy">🎬 CineBook &copy; 2026 — Cinema Booking System</p>
       </div>
-      <div id="showtimes-content" class="stack-list"></div>
-    </section>
+    </footer>
 
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">🎬 CineBook — Cinema Booking System</div>
-  </footer>
+  </div><!-- /content-sections -->
 
   <script src="js/api.js"></script>
   <script>
     // ── DOM refs ──
-    const moviesGrid      = document.getElementById('movies-grid');
-    const searchInput     = document.getElementById('search-input');
-    const clearSearchBtn  = document.getElementById('clear-search');
-    const pageFeedback    = document.getElementById('page-feedback');
-    const resultSummary   = document.getElementById('result-summary');
+    const moviesGrid       = document.getElementById('movies-grid');
+    const searchInput      = document.getElementById('search-input');
+    const clearSearchBtn   = document.getElementById('clear-search');
+    const pageFeedback     = document.getElementById('page-feedback');
+    const resultSummary    = document.getElementById('result-summary');
     const loadingIndicator = document.getElementById('loading-indicator');
-    const showtimesPanel  = document.getElementById('showtimes-panel');
-    const showtimesTitle  = document.getElementById('showtimes-title');
-    const showtimesSubtitle = document.getElementById('showtimes-subtitle');
+    const showtimesPanel   = document.getElementById('showtimes-panel');
+    const showtimesTitle   = document.getElementById('showtimes-title');
+    const showtimesSubtitle= document.getElementById('showtimes-subtitle');
     const showtimesContent = document.getElementById('showtimes-content');
+    const trendingScroll   = document.getElementById('trending-scroll');
+    const heroSearch       = document.getElementById('hero-search');
+    const bottomSearch     = document.getElementById('bottom-search');
 
     let debounceTimer   = null;
     let expandedMovieId = null;
@@ -625,7 +915,9 @@
     const showtimeCache = {};
 
     function escapeHtml(v) {
-      return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      return String(v).replace(/[&<>"']/g, c =>
+        ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])
+      );
     }
 
     function setLoading(on) {
@@ -644,21 +936,21 @@
       return c > 5 ? 'availability-good' : 'availability-low';
     }
 
-    // ── Movie poster map ──
+    // ── Poster map ──
     const moviePosters = {
-      'joker':          'images/joker.png',
-      'titanic':        'images/titanic.png',
-      'the dark knight':'images/dark_knight.png',
-      'dark knight':    'images/dark_knight.png',
-      'avatar':         'images/avatar.png',
-      'coco':           'images/coco.png',
-      'interstellar':   'images/interstellar.png',
-      'inception':      'images/inception.png',
-      'gladiator':      'images/gladiator.png',
-      'frozen':         'images/frozen.png',
-      'dune':           'images/dune.png',
-      'michael':        'images/michael.png',
-      'jurassic world': 'images/jurassic_world.png'
+      'joker':           'images/joker.png',
+      'titanic':         'images/titanic.png',
+      'the dark knight': 'images/dark_knight.png',
+      'dark knight':     'images/dark_knight.png',
+      'avatar':          'images/avatar.png',
+      'coco':            'images/coco.png',
+      'interstellar':    'images/interstellar.png',
+      'inception':       'images/inception.png',
+      'gladiator':       'images/gladiator.png',
+      'frozen':          'images/frozen.png',
+      'dune':            'images/dune.png',
+      'michael':         'images/michael.png',
+      'jurassic world':  'images/jurassic_world.png'
     };
 
     function getPosterUrl(title) {
@@ -669,7 +961,32 @@
       return null;
     }
 
-    // ── Render movies ──
+    // ── Trending strip ──
+    function renderTrending(movies) {
+      const top5 = movies.slice(0, 5);
+      trendingScroll.innerHTML = top5.map((movie, i) => {
+        const poster = getPosterUrl(movie.title);
+        const img = poster
+          ? `<img src="${poster}" class="trending-poster" alt="${escapeHtml(movie.title)} poster" loading="lazy">`
+          : `<div class="trending-poster" style="background:var(--bg-raised);display:flex;align-items:center;justify-content:center;font-size:2rem;border-radius:var(--radius-md)">🎞️</div>`;
+        return `
+          <div class="trending-item" role="listitem" tabindex="0"
+               data-movie-id="${movie.id}"
+               aria-label="${escapeHtml(movie.title)}, rank ${i+1}"
+               onclick="scrollToAndExpand(${movie.id})"
+               onkeydown="if(event.key==='Enter')scrollToAndExpand(${movie.id})">
+            <span class="trending-rank" aria-hidden="true">${i + 1}</span>
+            ${img}
+          </div>`;
+      }).join('');
+    }
+
+    function scrollToAndExpand(movieId) {
+      document.getElementById('movies').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => expandMovie(movieId), 400);
+    }
+
+    // ── Render movies grid ──
     function renderMovies(movies) {
       if (!movies.length) {
         moviesGrid.innerHTML = `
@@ -683,8 +1000,8 @@
       }
 
       moviesGrid.innerHTML = movies.map(movie => {
-        const selected = expandedMovieId === movie.id;
-        const poster   = getPosterUrl(movie.title);
+        const selected   = expandedMovieId === movie.id;
+        const poster     = getPosterUrl(movie.title);
         const posterHtml = poster
           ? `<img src="${poster}" class="movie-poster" alt="${escapeHtml(movie.title)} poster" loading="lazy">`
           : `<div class="poster-placeholder">🎞️</div>`;
@@ -708,12 +1025,11 @@
       }).join('');
     }
 
-    // ── Render showtimes panel ──
+    // ── Showtimes panel ──
     function renderShowtimesPanel(movieId, state) {
       showtimesPanel.classList.remove('hidden');
-
       const movie = currentMovies.find(m => m.id === movieId);
-      showtimesTitle.textContent   = movie ? movie.title : 'Showtimes';
+      showtimesTitle.textContent    = movie ? movie.title : 'Showtimes';
       showtimesSubtitle.textContent = 'Select a showtime to reserve your seats.';
 
       if (state.loading) {
@@ -723,12 +1039,10 @@
           </div>`;
         return;
       }
-
       if (state.error) {
         showtimesContent.innerHTML = `<div class="banner banner-error">${escapeHtml(state.error)}</div>`;
         return;
       }
-
       if (!state.shows || !state.shows.length) {
         showtimesContent.innerHTML = `<div class="empty-state">No showtimes available for this movie.</div>`;
         return;
@@ -753,7 +1067,6 @@
           </div>`;
       }).join('');
 
-      // Smooth scroll to showtimes
       setTimeout(() => showtimesPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
     }
 
@@ -788,7 +1101,7 @@
       }
     }
 
-    // ── Search & fetch ──
+    // ── Search ──
     async function performSearch() {
       const query = searchInput.value.trim();
       try {
@@ -803,7 +1116,6 @@
         resultSummary.textContent = query
           ? `${movies.length} result(s) for "${query}"`
           : `${movies.length} movie(s) available`;
-
         showBanner('', '');
 
         if (expandedMovieId !== null && showtimeCache[expandedMovieId]) {
@@ -836,10 +1148,46 @@
     });
 
     searchInput.addEventListener('input', scheduleSearch);
+
     clearSearchBtn.addEventListener('click', () => {
       searchInput.value = '';
       scheduleSearch();
       searchInput.focus();
+    });
+
+    // Hero search → sync to main search and scroll
+    heroSearch.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        searchInput.value = heroSearch.value;
+        document.getElementById('movies').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(scheduleSearch, 400);
+      }
+    });
+
+    // Bottom search → same
+    bottomSearch.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        searchInput.value = bottomSearch.value;
+        document.getElementById('movies').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(scheduleSearch, 400);
+      }
+    });
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        // close all
+        document.querySelectorAll('.faq-item.open').forEach(i => {
+          i.classList.remove('open');
+          i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        });
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
     });
 
     // ── Init ──
@@ -849,6 +1197,7 @@
         const movies = await getMovies();
         currentMovies = movies;
         renderMovies(movies);
+        renderTrending(movies);
         resultSummary.textContent = `${movies.length} movie(s) available`;
       } catch {
         currentMovies = [];
