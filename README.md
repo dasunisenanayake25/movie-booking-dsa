@@ -1,94 +1,212 @@
-# 🎬 CineBook: Premium Movie Booking System
+# 🎬 CineBook — Cinema Booking System
 
-CineBook is a high-performance, modern movie ticket booking system featuring a **C++ RESTful backend** and a **luxury Noir/Gold Web Frontend**. This project is a comprehensive demonstration of custom **Data Structures and Algorithms (DSA)**, built entirely from scratch without relying on the C++ Standard Template Library (STL) for core logic.
-
----
-
-## ✨ Key Features
-
-- **💎 Premium Experience**: A stunning "Dark Luxury" interface with glassmorphism, responsive design, and cinematic typography.
-- **💺 Dynamic Seating Grid**: Interactive 2D seating visualization with real-time state tracking.
-- **🤖 Group Recommendation**: Smart algorithms that automatically find the best available contiguous seating blocks for groups.
-- **⏳ Waitlist System**: Efficient FIFO queue management for handling bookings when a show reaches full capacity.
-- **⚡ High-Performance Lookups**: O(1) data retrieval using custom Hash Tables for show and booking indices.
-- **🔍 Instant Search**: Binary Search Tree (BST) indexing for lighting-fast movie title lookups.
+A full-stack cinema booking system built with a **C++ backend** (REST API via cpp-httplib) and a **vanilla HTML/CSS/JS frontend**. The system supports movie browsing, seat selection, group bookings, waitlist management, and booking cancellations — all powered by custom-built data structures.
 
 ---
 
-## 🏗️ System Architecture
+## 📁 Project Structure
 
-CineBook follows a client-server architecture where a **C++ HTTP Server** (`cpp-httplib`) serves as the backend engine, exposing RESTful APIs to a **Vanilla JavaScript/CSS3** frontend.
-
-### 🧠 Custom Data Structures Implemented
-
-| Structure | Description | Purpose |
-| :--- | :--- | :--- |
-| **SeatingGrid** | 2D Matrix / Matrix-based logic | Real-time seat assignment and visualization. |
-| **BSTMovieTitle** | Binary Search Tree | Optimized O(log n) searching for movie titles. |
-| **HashTable** | Chaining-based Hash Map | O(1) lookup for Shows and Bookings by ID. |
-| **QueueArray** | Circular Array Queue | FIFO management for the ticket waitlist. |
-| **SinglyLinkedList**| Dynamic Linked List | Tracking all active bookings linked to a specific show. |
-| **MergeSort** | Tailored Sort Algorithm | Efficiently organizing showtimes by datetime. |
-
----
-
-## 🚀 Getting Started
-
-### 📋 Prerequisites
-- **C++ Compiler**: `g++` (MinGW-w64 recommended).
-- **Network**: Windows Sockets (`ws2_32`) for the HTTP server.
-
-### 🛠️ Installation & Execution
-
-#### **Web Version (Full Experience)**
-The web version provides the premium UI and interactive seat map.
-
-1. **Compile the Server**:
-   ```bash
-   g++ -std=c++14 -I./include src/*.cpp -lws2_32 -o server.exe
-   ```
-2. **Run the Server**:
-   ```bash
-   ./server.exe
-   ```
-3. **Open in Browser**:
-   Navigate to [http://localhost:8080](http://localhost:8080)
-
-#### **Console Version**
-For a lightweight terminal-based experience.
-
-1. **Compile the App**:
-   ```bash
-   g++ -I./include src/BSTMovieTitle.cpp src/BookingSystem.cpp src/ConsoleIO.cpp src/HashTableIntToIndex.cpp src/Menu.cpp src/MergeSortShows.cpp src/QueueArrayWait.cpp src/SampleData.cpp src/SeatingGrid.cpp src/SinglyLinkedList.cpp src/Store.cpp src/main.cpp -o app.exe
-   ```
-2. **Run the App**:
-   ```bash
-   ./app.exe
-   ```
+```
+.
+├── frontend/
+│   ├── index.html          # Landing page (movie & show browser)
+│   ├── show.html           # Seat selection & booking page
+│   ├── booking.html        # Booking confirmation & cancellation
+│   ├── css/style.css       # Global styles & design system
+│   └── js/api.js           # Frontend API client
+├── include/                # C++ header files
+├── src/                    # C++ source files
+│   ├── server.cpp          # HTTP REST server & route handlers
+│   ├── BookingSystem.cpp   # Core booking logic
+│   └── ...                 # DSA implementations
+└── .vscode/tasks.json      # Build tasks
+```
 
 ---
 
-## 👥 Members Contributions
+## 👥 Team Members & Contributions
 
-The success of CineBook is the result of collaborative efforts across backend logic and frontend design:
+### 🎨 Amarasie — Frontend & Seating Grid
 
-### **Amarasie**
-- **Core DSA**: Implemented the `SeatingGrid` matrix logic and the high-performance `HashTableIntToIndex` for ID-based lookups.
-- **Seat Logic**: Developed the underlying logic for seat selection, state tracking, and availability checks.
-- **Frontend Design**: Led the aesthetic design and layout of the `index.html` dashboard, establishing the core Noir/Gold visual language.
+**Responsible for:** `frontend/index.html`, `frontend/css/style.css`, `src/SeatingGrid.cpp`, `include/SeatingGrid.h`, `src/HashTableIntToIndex.cpp`, `include/HashTableIntToIndex.h`, `src/SinglyLinkedList.cpp`, `include/SinglyLinkedListInt.h`
 
-### **Dasuni**
-- **Core DSA**: Implemented the `BSTMovieTitle` for optimized movie searching and the `MergeSortShows` algorithm for chronological show organization.
-- **System Objects**: Designed and implemented the core `Show` and `Movie` data structures.
-- **Frontend Functionality**: Developed interactive frontend components and integrated search features.
+**Frontend work:**
+- Designed and built the landing page (`index.html`) — Netflix-inspired dark theme with a poster-collage hero, movie cards, and show listings.
+- Authored the global CSS design system (`style.css`) with CSS custom properties for typography, color tokens, spacing, and responsive layout.
 
-### **Danith**
-- **Integration**: Developed the `server.cpp` RESTful API layer and established the communication bridge between C++ and JavaScript.
-- **System Logic**: Orchestrated the `BookingSystem` core logic, coordinating interactions between various DSA components.
-- **Waitlist Logic**: Implemented the `QueueArrayWait` system for handling booking overflows.
-- **Project Lead**: Managed the overall system architecture, data initialization, and frontend-backend synchronization.
+**DSA Implementation 1 — SeatingGrid (2D Array Grid)**
+
+The `SeatingGrid` class manages the per-show seat layout as a dynamically allocated 2D integer array.
+
+```
+SeatingGrid
+├── grid[ROWS][COLS]         — 2D array; values: 0=available, 1=selected, 2=booked
+├── seatMap (HashTable)      — encodes (row,col) → flat index for O(1) seat lookup
+└── selectedSeats (LinkedList) — tracks currently selected seats before confirmation
+```
+
+Key operations:
+
+| Method | Description | Complexity |
+|---|---|---|
+| `selectSeat(row, col)` | Mark a seat as selected | O(1) |
+| `deselectSeat(row, col)` | Unmark a selected seat | O(1) |
+| `confirmBooking()` | Commit selected seats to booked | O(k) — k = selected seats |
+| `cancelSeat(row, col)` | Free a booked seat | O(1) |
+| `getAvailableCount()` | Count free seats | O(n·m) |
+| `suggestSeats(count)` | Heuristic seat recommendation | O(n·m) |
+
+**DSA Implementation 2 — HashTableIntToIndex (Chained Hash Table)**
+
+Maps integer keys (show ID, booking ID, seat key) to array indices for O(1) average-case lookup. Used in three contexts: show ID index, booking ID index, and per-seat encoding inside `SeatingGrid`.
+
+```
+HashTableIntToIndex
+└── buckets[]  — array of linked-list chains
+    └── Node { key, index, next }
+```
+
+| Method | Description | Complexity |
+|---|---|---|
+| `put(key, index)` | Insert or update mapping | O(1) avg |
+| `get(key, outIndex)` | Lookup index by key | O(1) avg |
+| `remove(key)` | Delete a mapping | O(1) avg |
+
+**DSA Implementation 3 — SinglyLinkedListInt (Linked List)**
+
+Tracks the list of booking IDs associated with each show, used for iterating and cancelling bookings per show.
+
+```
+SinglyLinkedListInt
+└── Node { value (bookingId), next }
+```
+
+| Method | Description | Complexity |
+|---|---|---|
+| `insertLast(value)` | Append booking ID | O(1) |
+| `removeValue(value)` | Remove by value | O(n) |
+| `contains(value)` | Search for a value | O(n) |
 
 ---
 
-## 📜 License
-CineBook is developed for educational purposes to demonstrate the practical application of Data Structures and Algorithms in a modern, professional system architecture.
+### 🎥 Dasuni — Movie Lookup & Search
+
+**Responsible for:** `frontend/booking.html`, `frontend/js/api.js`, `src/BSTMovieTitle.cpp`, `include/BSTMovieTitle.h`, `src/MergeSortShows.cpp`, `include/MergeSortShows.h`
+
+**Frontend work:**
+- Built the booking confirmation and cancellation page (`booking.html`).
+
+**DSA Implementation 1 — BSTMovieTitle (Binary Search Tree)**
+
+The `BSTMovieTitle` BST indexes movies by their lowercase title for fast exact-match lookup.
+
+```
+BSTMovieTitle
+└── Node { movieId, title, titleLower, left, right, parent }
+```
+
+Key operations:
+
+| Method | Description | Complexity |
+|---|---|---|
+| `insert(movieId, title)` | Insert movie into BST by title | O(h) |
+| `searchExact(title)` | Case-insensitive exact title lookup | O(h) |
+| `inOrderList(outIds, count)` | Return all movie IDs sorted alphabetically | O(n) |
+
+> h = tree height. Balanced case: O(log n). Worst case: O(n).
+
+**DSA Implementation 2 — MergeSortShows (Merge Sort)**
+
+Sorts show indices by datetime so shows are listed in chronological order.
+
+```
+MergeSortShows::sortIndices(arr[], count, store)
+  └── mergeSort → divide & conquer → merge by show datetime
+```
+
+| Method | Description | Complexity |
+|---|---|---|
+| `sortIndices(arr, count, store)` | Sort show index array by datetime | O(n log n) |
+
+---
+
+### ⚙️ Danith — Waitlist, Server & Core Backend
+
+**Responsible for:** `frontend/show.html`, `src/server.cpp`, `src/BookingSystem.cpp`, `src/QueueArrayWait.cpp`, `src/Store.cpp`, `src/SampleData.cpp`, `src/ConsoleIO.cpp`, `src/Menu.cpp`, `src/main.cpp`, and all corresponding headers.
+
+**Frontend work:**
+- Implemented `api.js`, the JavaScript fetch-based client that wires the frontend pages to all backend REST endpoints.
+- Built the interactive seat selection page (`show.html`) with real-time seat state rendering (available / selected / booked) and group booking flow.
+
+**Backend work:**
+- Built the full REST API server using cpp-httplib (`server.cpp`) with 10+ endpoints covering movies, shows, seats, bookings, and the waitlist.
+- Implemented the `BookingSystem` class — the central orchestrator that coordinates all DSA components to handle bookings, cancellations, seat allocation, and waitlist processing.
+- Seeded sample data (`SampleData.cpp`) and built the console I/O and menu system for standalone CLI mode.
+
+**DSA Implementation — QueueArrayWait (Circular Array Queue)**
+
+Manages the per-show waitlist. Each show has its own queue of pending seat requests.
+
+```
+QueueArrayWait
+├── data[]   — fixed-capacity WaitRequest array
+├── front    — dequeue pointer
+└── rear     — enqueue pointer  (circular wraparound)
+```
+
+| Method | Description | Complexity |
+|---|---|---|
+| `enQueue(request)` | Add customer to waitlist | O(1) |
+| `deQueue(outValue)` | Remove front of waitlist | O(1) |
+| `peek(outValue)` | Inspect front without removing | O(1) |
+| `isFull() / isEmpty()` | Capacity checks | O(1) |
+
+---
+
+## 🌐 REST API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/movies` | List all movies |
+| GET | `/shows?movieId=<id>` | List shows for a movie (sorted by datetime) |
+| GET | `/shows/:id/seats` | Get seat map for a show |
+| GET | `/book/recommend?showId=&seats=` | Get recommended seat suggestions |
+| POST | `/book/single` | Book a single specific seat |
+| POST | `/book/group` | Book a group (auto seat allocation) |
+| GET | `/booking/:id` | View a booking |
+| DELETE | `/booking/:id` | Cancel a booking |
+| POST | `/waitlist` | Join the waitlist for a show |
+
+---
+
+## 🛠️ Build & Run
+
+**Requirements:** C++17 compiler (g++ / clang++), cpp-httplib (bundled in `include/httplib.h`)
+
+```bash
+# Compile (see .vscode/tasks.json for full flags)
+g++ -std=c++17 -o cinebook src/server.cpp src/BookingSystem.cpp \
+    src/SeatingGrid.cpp src/BSTMovieTitle.cpp src/MergeSortShows.cpp \
+    src/QueueArrayWait.cpp src/HashTableIntToIndex.cpp \
+    src/SinglyLinkedList.cpp src/Store.cpp src/SampleData.cpp \
+    src/ConsoleIO.cpp src/Menu.cpp src/main.cpp -I include
+
+# Run the server (default port 8080)
+./cinebook
+
+# Open the frontend
+open frontend/index.html
+```
+
+---
+
+## 🗂️ Data Structure Summary
+
+| Structure | File | Used For | Implemented By |
+|---|---|---|---|
+| 2D Array Grid | `SeatingGrid` | Per-show seat layout | Amarasie |
+| Hash Table | `HashTableIntToIndex` | ID → index lookup | Amarasie |
+| Singly Linked List | `SinglyLinkedListInt` | Per-show booking list | Amarasie |
+| Binary Search Tree | `BSTMovieTitle` | Movie title search | Dasuni |
+| Merge Sort | `MergeSortShows` | Chronological show listing | Dasuni |
+| Circular Queue | `QueueArrayWait` | Per-show waitlist | Danith |
