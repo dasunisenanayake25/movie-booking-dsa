@@ -354,10 +354,32 @@ namespace
             json += std::to_string(show.price);
             json += ",\"availableSeats\":";
             json += std::to_string(system.getAvailableCount(show.id));
+            json += ",\"waitlistCount\":";
+            json += std::to_string(show.waitCount);
             json += "}";
         }
 
         json += "]";
+        return json;
+    }
+
+    std::string buildShowStatusJson(const BookingSystem &system, int showId)
+    {
+        int showIndex = findShowIndexById(system, showId);
+        if (showIndex == -1)
+        {
+            return "";
+        }
+
+        const Show &show = system.store.shows[showIndex];
+        std::string json = "{";
+        json += "\"id\":";
+        json += std::to_string(show.id);
+        json += ",\"availableSeats\":";
+        json += std::to_string(system.getAvailableCount(show.id));
+        json += ",\"waitlistCount\":";
+        json += std::to_string(show.waitCount);
+        json += "}";
         return json;
     }
 
@@ -421,7 +443,10 @@ namespace
             json += "]";
         }
 
-        json += "]}";
+        json += "],";
+        json += "\"availableSeats\":" + std::to_string(system.getAvailableCount(showId)) + ",";
+        json += "\"waitlistCount\":" + std::to_string(system.store.shows[showIndex].waitCount);
+        json += "}";
         return json;
     }
 
@@ -552,7 +577,8 @@ int main()
             return;
         }
 
-        std::string json = "{\"bookingId\":" + std::to_string(bookingId) + "}";
+        std::string showStatus = buildShowStatusJson(system, showId);
+        std::string json = "{\"bookingId\":" + std::to_string(bookingId) + ",\"showStatus\":" + showStatus + "}";
         res.set_content(json, "application/json"); });
 
     server.Post("/book/group", [&system](const httplib::Request &req, httplib::Response &res)
@@ -625,7 +651,8 @@ int main()
             return;
         }
 
-        std::string json = "{\"bookingId\":" + std::to_string(bookingId) + "}";
+        std::string showStatus = buildShowStatusJson(system, showId);
+        std::string json = "{\"bookingId\":" + std::to_string(bookingId) + ",\"showStatus\":" + showStatus + "}";
         res.set_content(json, "application/json"); });
 
     server.Get("/book/recommend", [&system](const httplib::Request &req, httplib::Response &res)
@@ -703,8 +730,19 @@ int main()
             return;
         }
 
+        // Get showId before cancellation
+        int bookingIndex = -1;
+        if (!system.bookingIdIndex.get(bookingId, bookingIndex)) {
+            res.status = 404;
+            res.set_content(buildErrorJson("booking not found"), "application/json");
+            return;
+        }
+        int showId = system.store.bookings[bookingIndex].showId;
+
         bool success = system.cancelBooking(bookingId, name) != 0;
-        res.set_content(buildSuccessJson(success), "application/json"); });
+        std::string showStatus = buildShowStatusJson(system, showId);
+        std::string json = "{\"success\":" + std::string(success ? "true" : "false") + ",\"showStatus\":" + showStatus + "}";
+        res.set_content(json, "application/json"); });
 
     server.Post("/waitlist", [&system](const httplib::Request &req, httplib::Response &res)
                 {
@@ -721,7 +759,9 @@ int main()
         }
 
         bool success = system.joinWaitlist(showId, name, seatsNeeded) != 0;
-        res.set_content(buildSuccessJson(success), "application/json"); });
+        std::string showStatus = buildShowStatusJson(system, showId);
+        std::string json = "{\"success\":" + std::string(success ? "true" : "false") + ",\"showStatus\":" + showStatus + "}";
+        res.set_content(json, "application/json"); });
 
     server.set_mount_point("/", "./frontend");
 
