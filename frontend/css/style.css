@@ -9,52 +9,60 @@
    CSS Variables
    ================================================================ */
 :root {
-  --bg-deep:        #080808;
-  --bg-surface:     #0f0f0f;
-  --bg-card:        #141414;
-  --bg-raised:      #1c1c1c;
-  --bg-hover:       #222222;
+  --bg-deep: #080808;
+  --bg-surface: #0f0f0f;
+  --bg-card: #141414;
+  --bg-raised: #1c1c1c;
+  --bg-hover: #222222;
 
-  --gold:           #c9a84c;
-  --gold-light:     #e8c96e;
-  --gold-dim:       #7a6030;
-  --gold-glow:      rgba(201, 168, 76, 0.18);
+  --gold: #c9a84c;
+  --gold-light: #e8c96e;
+  --gold-dim: #7a6030;
+  --gold-glow: rgba(201, 168, 76, 0.18);
 
-  --red:            #c0392b;
-  --red-bright:     #e74c3c;
-  --red-dim:        rgba(192, 57, 43, 0.25);
+  --red: #c0392b;
+  --red-bright: #e74c3c;
+  --red-dim: rgba(192, 57, 43, 0.25);
 
-  --text-primary:   #f0ece4;
+  --text-primary: #f0ece4;
   --text-secondary: #9e9a92;
-  --text-muted:     #5a5650;
-  --text-gold:      #c9a84c;
+  --text-muted: #5a5650;
+  --text-gold: #c9a84c;
 
-  --border:         rgba(255, 255, 255, 0.07);
-  --border-gold:    rgba(201, 168, 76, 0.3);
-  --border-hover:   rgba(201, 168, 76, 0.5);
+  --border: rgba(255, 255, 255, 0.07);
+  --border-gold: rgba(201, 168, 76, 0.3);
+  --border-hover: rgba(201, 168, 76, 0.5);
 
-  --radius-sm:      8px;
-  --radius-md:      14px;
-  --radius-lg:      20px;
-  --radius-xl:      28px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 
-  --font-display:   'Playfair Display', Georgia, serif;
-  --font-body:      'DM Sans', system-ui, sans-serif;
-  --font-mono:      'DM Mono', monospace;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', monospace;
 
-  --shadow-card:    0 4px 32px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
-  --shadow-float:   0 20px 60px rgba(0,0,0,0.8);
-  --shadow-gold:    0 0 30px rgba(201, 168, 76, 0.2);
+  --shadow-card: 0 4px 32px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-float: 0 20px 60px rgba(0, 0, 0, 0.8);
+  --shadow-gold: 0 0 30px rgba(201, 168, 76, 0.2);
 
-  --transition:     cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ================================================================
    Reset & Base
    ================================================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   background: var(--bg-deep);
@@ -81,25 +89,43 @@ body::before {
 /* ================================================================
    Typography
    ================================================================ */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-display);
   line-height: 1.15;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
-h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; }
-h2 { font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; }
-h3 { font-size: 1.1rem; font-weight: 700; }
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+}
 
-p { color: var(--text-secondary); }
+h2 {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+p {
+  color: var(--text-secondary);
+}
 
 a {
   color: var(--gold);
   text-decoration: none;
   transition: color 0.2s var(--transition);
 }
-a:hover { color: var(--gold-light); }
+
+a:hover {
+  color: var(--gold-light);
+}
 
 /* ================================================================
    Layout
@@ -210,7 +236,10 @@ a:hover { color: var(--gold-light); }
 /* ================================================================
    Buttons
    ================================================================ */
-button, .button-primary, .button-secondary, .button-outline {
+button,
+.button-primary,
+.button-secondary,
+.button-outline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -228,7 +257,8 @@ button, .button-primary, .button-secondary, .button-outline {
   letter-spacing: 0.02em;
 }
 
-.button-primary, button[type="submit"]:not(.button-secondary):not(.button-outline):not(.danger-button):not(.cancel-outline):not(.tab-button) {
+.button-primary,
+button[type="submit"]:not(.button-secondary):not(.button-outline):not(.danger-button):not(.cancel-outline):not(.tab-button) {
   background: linear-gradient(135deg, var(--gold), var(--gold-dim));
   color: #0a0a0a;
   border-color: var(--gold-dim);
@@ -251,7 +281,7 @@ button[type="submit"]:not(.button-secondary):not(.button-outline):not(.danger-bu
 .button-secondary:hover {
   color: var(--text-primary);
   background: var(--bg-hover);
-  border-color: rgba(255,255,255,0.15);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .button-outline {
@@ -262,7 +292,7 @@ button[type="submit"]:not(.button-secondary):not(.button-outline):not(.danger-bu
 
 .button-outline:hover {
   color: var(--text-primary);
-  border-color: rgba(255,255,255,0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .danger-button {
@@ -402,7 +432,9 @@ label {
   color: var(--gold-light);
 }
 
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}
 
 .status-text {
   color: var(--text-muted);
@@ -411,7 +443,9 @@ label {
   margin: 0.5rem 0;
 }
 
-.subtle { color: var(--text-secondary); }
+.subtle {
+  color: var(--text-secondary);
+}
 
 /* ================================================================
    Loading
@@ -426,7 +460,11 @@ label {
   display: inline-block;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .loading {
   display: inline-flex;
@@ -439,7 +477,7 @@ label {
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
   z-index: 500;
   display: flex;
@@ -509,6 +547,8 @@ label {
 .seat-axis {
   width: 34px;
   height: 34px;
+  min-width: 34px;
+  flex: 0 0 34px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -516,7 +556,6 @@ label {
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-muted);
-  flex-shrink: 0;
   user-select: none;
 }
 
@@ -525,6 +564,7 @@ label {
   height: 34px;
   min-width: 34px;
   min-height: 34px;
+  flex: 0 0 34px;
   border-radius: 6px;
   font-family: var(--font-mono);
   font-size: 0.65rem;
@@ -578,8 +618,15 @@ label {
 }
 
 @keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
-  50% { box-shadow: 0 0 0 4px var(--gold-glow); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--gold-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px var(--gold-glow);
+  }
 }
 
 .seat-legend {
@@ -604,10 +651,24 @@ label {
   border: 1px solid transparent;
 }
 
-.legend-swatch.available { background: rgba(39, 80, 55, 0.6); border-color: rgba(39, 174, 96, 0.2); }
-.legend-swatch.taken { background: rgba(50, 20, 20, 0.8); border-color: rgba(192, 57, 43, 0.2); }
-.legend-swatch.selected { background: linear-gradient(135deg, var(--gold), var(--gold-dim)); }
-.legend-swatch.recommended { background: rgba(201, 168, 76, 0.25); border-color: var(--border-gold); }
+.legend-swatch.available {
+  background: rgba(39, 80, 55, 0.6);
+  border-color: rgba(39, 174, 96, 0.2);
+}
+
+.legend-swatch.taken {
+  background: rgba(50, 20, 20, 0.8);
+  border-color: rgba(192, 57, 43, 0.2);
+}
+
+.legend-swatch.selected {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+}
+
+.legend-swatch.recommended {
+  background: rgba(201, 168, 76, 0.25);
+  border-color: var(--border-gold);
+}
 
 .screen-bar {
   width: 100%;
@@ -648,7 +709,9 @@ label {
   font-size: 1rem;
 }
 
-.show-info-subtle { font-size: 0.875rem; }
+.show-info-subtle {
+  font-size: 0.875rem;
+}
 
 .show-info-chip {
   display: inline-flex;
@@ -690,15 +753,22 @@ label {
   margin-bottom: -1px;
 }
 
-.tab-button:hover { color: var(--text-primary); }
+.tab-button:hover {
+  color: var(--text-primary);
+}
 
 .tab-button.active {
   color: var(--gold);
   border-bottom-color: var(--gold);
 }
 
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
 
 /* ================================================================
    Ticket Card
@@ -770,7 +840,8 @@ label {
   color: var(--text-muted);
 }
 
-.detail-value, .detail-item strong {
+.detail-value,
+.detail-item strong {
   color: var(--text-primary);
   font-weight: 600;
 }
@@ -824,7 +895,7 @@ label {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
   z-index: 400;
   display: flex;
@@ -861,7 +932,10 @@ label {
 /* ================================================================
    Stack list (showtimes)
    ================================================================ */
-.stack-list { display: grid; gap: 0.65rem; }
+.stack-list {
+  display: grid;
+  gap: 0.65rem;
+}
 
 .list-card {
   background: var(--bg-raised);
@@ -871,13 +945,22 @@ label {
   transition: border-color 0.2s var(--transition);
 }
 
-.list-card:hover { border-color: var(--border-hover); }
+.list-card:hover {
+  border-color: var(--border-hover);
+}
 
 /* ================================================================
    Availability Colors
    ================================================================ */
-.availability-good { color: #6fcf97; font-weight: 600; }
-.availability-low  { color: #eb5757; font-weight: 700; }
+.availability-good {
+  color: #6fcf97;
+  font-weight: 600;
+}
+
+.availability-low {
+  color: #eb5757;
+  font-weight: 700;
+}
 
 /* ================================================================
    Section Helpers
@@ -912,7 +995,9 @@ label {
   transition: border-color 0.2s;
 }
 
-.faq-item:hover { border-color: var(--border-gold); }
+.faq-item:hover {
+  border-color: var(--border-gold);
+}
 
 .faq-question {
   width: 100%;
@@ -932,7 +1017,9 @@ label {
   transition: color 0.2s;
 }
 
-.faq-question:hover { color: var(--gold); }
+.faq-question:hover {
+  color: var(--gold);
+}
 
 .faq-plus {
   font-size: 1.5rem;
@@ -951,7 +1038,7 @@ label {
 .faq-answer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
   padding: 0 1.25rem;
 }
 
@@ -1051,7 +1138,7 @@ label {
   margin: 0 auto;
 }
 
-.booking-lookup-card { }
+.booking-lookup-card {}
 
 .lookup-header {
   display: flex;
@@ -1070,19 +1157,53 @@ label {
   font-style: italic;
 }
 
-.lookup-subtitle { font-size: 0.875rem; }
+.lookup-subtitle {
+  font-size: 0.875rem;
+}
 
 /* ================================================================
    Responsive
    ================================================================ */
 @media (max-width: 640px) {
-  .panel { padding: 1.25rem; border-radius: var(--radius-lg); }
-  .header-row { flex-wrap: wrap; }
-  .top-nav a { font-size: 0.8rem; padding: 0.35rem 0.6rem; }
-  .card-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-  .inline-form { flex-direction: column; }
-  .inline-form input { min-width: unset; width: 100%; }
-  .seat-button { width: 30px; height: 30px; min-width: 30px; min-height: 30px; }
-  .details-grid { grid-template-columns: 1fr 1fr; }
-  .booking-tabs { overflow-x: auto; }
+  .panel {
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .header-row {
+    flex-wrap: wrap;
+  }
+
+  .top-nav a {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.6rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .inline-form {
+    flex-direction: column;
+  }
+
+  .inline-form input {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .seat-button {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .booking-tabs {
+    overflow-x: auto;
+  }
 }
