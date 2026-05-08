@@ -484,11 +484,79 @@
         </div>
     </div>
 
-    <footer class="site-footer">
-        <div class="container">
-            🎬 CineBook — Premium Cinema Booking System
+    <!-- ═══ FOOTER AREA ═══ -->
+    <div class="content-sections" style="margin-top: 4rem;">
+        <!-- FAQ -->
+        <section class="section-block" aria-label="Frequently Asked Questions">
+            <div class="container" style="max-width: 860px">
+                <div class="section-label">Frequently Asked Questions</div>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            How do I retrieve my ticket?
+                            <span class="faq-plus" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Enter your <strong>Booking ID</strong> in the search bar above. Your digital ticket with all details and seats will be displayed instantly.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            Can I cancel my booking?
+                            <span class="faq-plus" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes. Once your ticket is retrieved, click the "Cancel Ticket" button. You will be asked to confirm your name to complete the cancellation.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            Where is my Booking ID?
+                            <span class="faq-plus" aria-hidden="true">+</span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Your Booking ID was displayed on the screen immediately after your successful reservation on the show page.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BOTTOM CTA -->
+        <div class="bottom-cta">
+            <p>Ready to watch? Search a movie or browse all titles below.</p>
+            <div class="bottom-cta-row">
+                <input id="bottom-search" type="text" placeholder="Search movies..." aria-label="Search movies">
+                <a class="btn-get-started" href="index.html#movies">
+                    Get Started →
+                </a>
+            </div>
         </div>
-    </footer>
+
+        <!-- FOOTER -->
+        <footer class="footer-full" role="contentinfo">
+            <div class="container">
+                <p class="footer-contact">Questions? <a href="#">Contact us</a></p>
+                <div class="footer-links-grid">
+                    <a href="#">FAQ</a>
+                    <a href="#">Help Centre</a>
+                    <a href="#">Account</a>
+                    <a href="#">Media Centre</a>
+                    <a href="#">Investor Relations</a>
+                    <a href="#">Jobs</a>
+                    <a href="#">Ways to Book</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Cookie Preferences</a>
+                    <a href="#">Corporate Information</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Legal Notices</a>
+                    <a href="#">Only on CineBook</a>
+                </div>
+                <p class="footer-copy">🎬 CineBook &copy; 2026 — Cinema Booking System</p>
+            </div>
+        </footer>
+    </div>
 
     <script src="js/api.js"></script>
     <script>
@@ -632,6 +700,30 @@
                 showFeedback(modalFeedback, 'error', err.message || 'Error cancelling booking.');
             }
         });
+        // ── Footer Interactions ──
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.closest('.faq-item');
+                const isOpen = item.classList.contains('open');
+                document.querySelectorAll('.faq-item.open').forEach(i => {
+                    i.classList.remove('open');
+                    i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                });
+                if (!isOpen) {
+                    item.classList.add('open');
+                    btn.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
+
+        const bottomSearch = document.getElementById('bottom-search');
+        if (bottomSearch) {
+            bottomSearch.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && bottomSearch.value.trim()) {
+                    window.location.href = `index.html?search=${encodeURIComponent(bottomSearch.value.trim())}#movies`;
+                }
+            });
+        }
     </script>
 </body>
 

@@ -423,141 +423,19 @@
     }
 
     /* ════════════════════════════════════════
-       FAQ ACCORDION
+       HEADER overrides for this page
     ════════════════════════════════════════ */
-    .faq-list {
-      display: grid;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .faq-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-
-    .faq-item:hover { border-color: var(--border-gold); }
-
-    .faq-question {
-      width: 100%;
-      background: none;
-      border: none;
-      padding: 1.1rem 1.25rem;
-      text-align: left;
-      color: var(--text-primary);
-      font-size: 1rem;
-      font-weight: 600;
-      font-family: var(--font-body);
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      transition: color 0.2s;
-    }
-
-    .faq-question:hover { color: var(--gold); }
-
-    .faq-plus {
-      font-size: 1.5rem;
-      font-weight: 300;
-      color: var(--text-muted);
-      transition: transform 0.3s, color 0.2s;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .faq-item.open .faq-plus {
-      transform: rotate(45deg);
-      color: var(--gold);
-    }
-
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
-      padding: 0 1.25rem;
-    }
-
-    .faq-item.open .faq-answer {
-      max-height: 300px;
-      padding: 0 1.25rem 1.1rem;
-    }
-
-    .faq-answer p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      line-height: 1.65;
-      margin: 0;
-    }
-
-    /* ════════════════════════════════════════
-       BOTTOM CTA STRIP
-    ════════════════════════════════════════ */
-    .bottom-cta {
-      text-align: center;
-      padding: 3rem 1.5rem;
-      border-bottom: 8px solid var(--bg-surface);
-    }
-
-    .bottom-cta p {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin-bottom: 1rem;
-    }
-
-    .bottom-cta-row {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .bottom-cta-row input[type="text"] {
-      flex: 1; min-width: 200px; height: 48px;
-      background: rgba(20,20,20,0.9);
-    }
-
-    /* ════════════════════════════════════════
-       FOOTER LINKS
-    ════════════════════════════════════════ */
-    .footer-full {
-      padding: 3rem 0 2rem;
-      background: var(--bg-deep);
-    }
-
-    .footer-contact {
-      margin-bottom: 1.5rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .footer-contact a { color: var(--text-muted); text-decoration: underline; }
-
-    .footer-links-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 0.5rem 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-links-grid a {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      text-decoration: underline;
-      transition: color 0.2s;
-    }
-
-    .footer-links-grid a:hover { color: var(--text-secondary); }
-
-    .footer-copy {
-      font-size: 0.78rem;
-      color: var(--text-muted);
+    /* Override sticky from style.css — float transparently over hero */
+    .page-header.page-header-transparent {
+      background: linear-gradient(to bottom, rgba(8,8,8,0.88) 0%, transparent 100%) !important;
+      border-bottom: none !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 20 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
 
     /* ════════════════════════════════════════
@@ -1196,9 +1074,24 @@
       try {
         const movies = await getMovies();
         currentMovies = movies;
-        renderMovies(movies);
         renderTrending(movies);
-        resultSummary.textContent = `${movies.length} movie(s) available`;
+
+        // Handle search query from URL (e.g., from footer of show.html)
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryFromUrl = urlParams.get('search');
+        
+        if (queryFromUrl) {
+          searchInput.value = queryFromUrl;
+          clearSearchBtn.classList.remove('hidden');
+          // Perform search immediately
+          await performSearch();
+          // Scroll to results if a search was provided
+          const movieSection = document.getElementById('movies');
+          if (movieSection) movieSection.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          renderMovies(movies);
+          resultSummary.textContent = `${movies.length} movie(s) available`;
+        }
       } catch {
         currentMovies = [];
         moviesGrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">Unable to load movies. Start the server first.</div>`;

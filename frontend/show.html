@@ -357,9 +357,79 @@
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="container">🎬 CineBook — Cinema Booking System</div>
-    </footer>
+    <!-- ═══ FOOTER AREA ═══ -->
+    <div class="content-sections" style="margin-top: 3rem;">
+      <!-- FAQ -->
+      <section class="section-block" aria-label="Frequently Asked Questions">
+        <div class="container" style="max-width: 860px">
+          <div class="section-label">Frequently Asked Questions</div>
+          <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-question" aria-expanded="false">
+                What is CineBook?
+                <span class="faq-plus" aria-hidden="true">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>CineBook is a fast, modern cinema booking system. Search any movie currently showing, view real-time seat availability, and reserve your perfect spot — all in a few clicks.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" aria-expanded="false">
+                How do I cancel a booking?
+                <span class="faq-plus" aria-hidden="true">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>Go to <strong>My Booking</strong>, enter your Ticket ID, and select Cancel. Cancellations are processed instantly and your seats are released immediately.</p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-question" aria-expanded="false">
+                What movies can I watch?
+                <span class="faq-plus" aria-hidden="true">+</span>
+              </button>
+              <div class="faq-answer">
+                <p>The Now Showing grid on the home page lists every film currently available. The catalogue updates in real-time from our server — refresh anytime to see the latest titles.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BOTTOM CTA -->
+      <div class="bottom-cta">
+        <p>Ready to watch? Search a movie or browse all titles below.</p>
+        <div class="bottom-cta-row">
+          <input id="bottom-search" type="text" placeholder="Search movies..." aria-label="Search movies">
+          <a class="btn-get-started" href="index.html#movies">
+            Get Started →
+          </a>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="footer-full" role="contentinfo">
+        <div class="container">
+          <p class="footer-contact">Questions? <a href="#">Contact us</a></p>
+          <div class="footer-links-grid">
+            <a href="#">FAQ</a>
+            <a href="#">Help Centre</a>
+            <a href="#">Account</a>
+            <a href="#">Media Centre</a>
+            <a href="#">Investor Relations</a>
+            <a href="#">Jobs</a>
+            <a href="#">Ways to Book</a>
+            <a href="#">Terms of Use</a>
+            <a href="#">Privacy</a>
+            <a href="#">Cookie Preferences</a>
+            <a href="#">Corporate Information</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Legal Notices</a>
+            <a href="#">Only on CineBook</a>
+          </div>
+          <p class="footer-copy">🎬 CineBook &copy; 2026 — Cinema Booking System</p>
+        </div>
+      </footer>
+    </div>
 
     <script src="js/api.js"></script>
     <script>
@@ -370,10 +440,16 @@
       const seatMapShell = document.getElementById("seat-map-shell");
       const selectedSeatText = document.getElementById("selected-seat-text");
       const bookingNameInput = document.getElementById("booking-name");
-      const confirmBookingBtn = document.getElementById("confirm-booking-button");
-      const singleBookingFeedback = document.getElementById("single-booking-feedback");
+      const confirmBookingBtn = document.getElementById(
+        "confirm-booking-button",
+      );
+      const singleBookingFeedback = document.getElementById(
+        "single-booking-feedback",
+      );
       const errorBanner = document.getElementById("error-banner");
-      const errorBannerContent = document.getElementById("error-banner-content");
+      const errorBannerContent = document.getElementById(
+        "error-banner-content",
+      );
       const loadingSpinner = document.getElementById("loading-spinner");
       const singleTab = document.getElementById("single-tab");
       const groupTab = document.getElementById("group-tab");
@@ -381,16 +457,30 @@
       const groupPanel = document.getElementById("group-panel");
       const groupNameInput = document.getElementById("group-name");
       const groupSeatCountInput = document.getElementById("group-seat-count");
-      const recommendSeatsBtn = document.getElementById("recommend-seats-button");
-      const recommendedSeatsDisplay = document.getElementById("recommended-seats-display");
-      const recommendedSeatsText = document.getElementById("recommended-seats-text");
-      const confirmGroupBookingBtn = document.getElementById("confirm-group-booking-button");
+      const recommendSeatsBtn = document.getElementById(
+        "recommend-seats-button",
+      );
+      const recommendedSeatsDisplay = document.getElementById(
+        "recommended-seats-display",
+      );
+      const recommendedSeatsText = document.getElementById(
+        "recommended-seats-text",
+      );
+      const confirmGroupBookingBtn = document.getElementById(
+        "confirm-group-booking-button",
+      );
       const waitlistForm = document.getElementById("waitlist-form");
       const waitlistNameInput = document.getElementById("waitlist-name");
-      const waitlistSeatCountInput = document.getElementById("waitlist-seat-count");
+      const waitlistSeatCountInput = document.getElementById(
+        "waitlist-seat-count",
+      );
       const joinWaitlistBtn = document.getElementById("join-waitlist-button");
-      const groupBookingFeedback = document.getElementById("group-booking-feedback");
-      const availableSeatsLabel = document.getElementById("available-seats-label");
+      const groupBookingFeedback = document.getElementById(
+        "group-booking-feedback",
+      );
+      const availableSeatsLabel = document.getElementById(
+        "available-seats-label",
+      );
 
       // ── State ──
       const params = new URLSearchParams(window.location.search);
@@ -499,10 +589,16 @@
             btn.className = "seat-button";
             btn.dataset.row = r + 1;
             btn.dataset.col = c + 1;
-            btn.setAttribute("aria-label", `Row ${toRowLabel(r)} Seat ${c + 1}`);
+            btn.setAttribute(
+              "aria-label",
+              `Row ${toRowLabel(r)} Seat ${c + 1}`,
+            );
 
             const key = seatKey(r, c);
-            const isSelected = selectedSeat && selectedSeat.row === r + 1 && selectedSeat.col === c + 1;
+            const isSelected =
+              selectedSeat &&
+              selectedSeat.row === r + 1 &&
+              selectedSeat.col === c + 1;
             const isRecommended = recommendedLookup[key];
 
             if (state === "taken") {
@@ -545,10 +641,13 @@
           // Use the API helper from api.js
           const data = await getSeats(showId);
           hideErrorBanner();
-          
+
           if (selectedSeat) {
             const selectedRow = data.grid && data.grid[selectedSeat.row - 1];
-            if (!selectedRow || getSeatState(selectedRow[selectedSeat.col - 1]) === "taken") {
+            if (
+              !selectedRow ||
+              getSeatState(selectedRow[selectedSeat.col - 1]) === "taken"
+            ) {
               clearSelectedSeat();
             }
           }
@@ -560,7 +659,9 @@
           seatMapShell.className = "seat-map-shell empty-state";
           seatMapShell.textContent = "Unable to load the seat map right now.";
           setStatus("Error: " + err.message, true);
-          showErrorBanner("Could not load seats — make sure the server is running.");
+          showErrorBanner(
+            "Could not load seats — make sure the server is running.",
+          );
         } finally {
           if (!silent) setLoading(false);
         }
@@ -574,7 +675,11 @@
         const row = Number(btn.dataset.row);
         const col = Number(btn.dataset.col);
 
-        if (selectedSeat && selectedSeat.row === row && selectedSeat.col === col) {
+        if (
+          selectedSeat &&
+          selectedSeat.row === row &&
+          selectedSeat.col === col
+        ) {
           selectedSeat = null;
         } else {
           selectedSeat = { row, col };
@@ -612,7 +717,11 @@
           return;
         }
         if (!selectedSeat) {
-          showBookingFeedback("error", "Please select a seat from the map first.", false);
+          showBookingFeedback(
+            "error",
+            "Please select a seat from the map first.",
+            false,
+          );
           return;
         }
 
@@ -627,13 +736,22 @@
         showBookingFeedback("info", "Booking your seat…", false);
 
         try {
-          const result = await bookSingle(showId, name, selectedSeat.row, selectedSeat.col);
+          const result = await bookSingle(
+            showId,
+            name,
+            selectedSeat.row,
+            selectedSeat.col,
+          );
           const bookingId = result.bookingId || result.id;
           bookingNameInput.value = "";
           selectedSeat = null;
           recommendedLookup = {};
           hideErrorBanner();
-          showBookingFeedback("success", `Booking confirmed! Your Booking ID: ${bookingId}`, false);
+          showBookingFeedback(
+            "success",
+            `Booking confirmed! Your Booking ID: ${bookingId}`,
+            false,
+          );
           await loadSeatMap(true);
         } catch (err) {
           showBookingFeedback("error", err.message, false);
@@ -650,7 +768,11 @@
         }
         const count = parseInt(groupSeatCountInput.value, 10);
         if (!count || count < 2 || count > 20) {
-          showBookingFeedback("error", "Enter a valid number of seats (2–20).", true);
+          showBookingFeedback(
+            "error",
+            "Enter a valid number of seats (2–20).",
+            true,
+          );
           groupSeatCountInput.focus();
           return;
         }
@@ -661,12 +783,14 @@
         try {
           const result = await recommendSeats(showId, count);
           if (!result.seats || !result.seats.length) {
-            throw new Error("Not enough contiguous seats for " + count + " people.");
+            throw new Error(
+              "Not enough contiguous seats for " + count + " people.",
+            );
           }
 
           groupRecommendedSeats = result.seats;
           recommendedLookup = {};
-          
+
           groupRecommendedSeats.forEach((s) => {
             recommendedLookup[seatKey(s.row - 1, s.col - 1)] = true;
           });
@@ -678,8 +802,12 @@
           recommendedSeatsText.textContent = "Recommended: " + labels;
           recommendedSeatsDisplay.classList.remove("hidden");
           waitlistForm.classList.add("hidden");
-          showBookingFeedback("success", `Found ${count} available seats!`, true);
-          
+          showBookingFeedback(
+            "success",
+            `Found ${count} available seats!`,
+            true,
+          );
+
           if (currentSeatMapData) {
             renderSeatMap(currentSeatMapData);
           }
@@ -729,7 +857,11 @@
           recommendedLookup = {};
           recommendedSeatsDisplay.classList.add("hidden");
           hideErrorBanner();
-          showBookingFeedback("success", `Group booking confirmed! Booking ID: ${bookingId}`, true);
+          showBookingFeedback(
+            "success",
+            `Group booking confirmed! Booking ID: ${bookingId}`,
+            true,
+          );
           await loadSeatMap(true);
         } catch (err) {
           showBookingFeedback("error", err.message, true);
@@ -752,7 +884,11 @@
         }
         const seatsNeeded = parseInt(waitlistSeatCountInput.value, 10);
         if (!seatsNeeded || seatsNeeded < 1 || seatsNeeded > 20) {
-          showBookingFeedback("error", "Enter a valid number of seats (1–20).", true);
+          showBookingFeedback(
+            "error",
+            "Enter a valid number of seats (1–20).",
+            true,
+          );
           waitlistSeatCountInput.focus();
           return;
         }
@@ -764,13 +900,44 @@
           await joinWaitlist(showId, name, seatsNeeded);
           waitlistNameInput.value = "";
           waitlistSeatCountInput.value = "";
-          showBookingFeedback("success", "Added to waitlist! You will be notified when seats open up.", true);
+          showBookingFeedback(
+            "success",
+            "Added to waitlist! You will be notified when seats open up.",
+            true,
+          );
         } catch (err) {
           showBookingFeedback("error", err.message, true);
         } finally {
           setLoading(false);
         }
       });
+
+      // ── Footer Interactions ──
+      // FAQ accordion
+      document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.closest('.faq-item');
+          const isOpen = item.classList.contains('open');
+          document.querySelectorAll('.faq-item.open').forEach(i => {
+            i.classList.remove('open');
+            i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+          });
+          if (!isOpen) {
+            item.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // Bottom search → redirect to home with search query
+      const bottomSearch = document.getElementById('bottom-search');
+      if (bottomSearch) {
+        bottomSearch.addEventListener('keydown', e => {
+          if (e.key === 'Enter' && bottomSearch.value.trim()) {
+            window.location.href = `index.html?search=${encodeURIComponent(bottomSearch.value.trim())}#movies`;
+          }
+        });
+      }
 
       // ── Init ──
       syncSelectionState();
