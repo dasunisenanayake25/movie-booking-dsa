@@ -159,6 +159,10 @@
           <span>Available:</span>
           <strong id="available-seats-label">—</strong>
         </span>
+        <span class="show-info-chip">
+          <span>Waitlist:</span>
+          <strong id="waitlist-count-label">0</strong>
+        </span>
       </div>
     </div>
   </div>
@@ -408,6 +412,9 @@
     const availableSeatsLabel = document.getElementById(
       "available-seats-label",
     );
+    const waitlistCountLabel = document.getElementById(
+      "waitlist-count-label",
+    );
 
     // ── State ──
     const params = new URLSearchParams(window.location.search);
@@ -447,6 +454,15 @@
       const el = isGroup ? groupBookingFeedback : singleBookingFeedback;
       el.className = "banner banner-" + type;
       el.textContent = msg;
+    }
+
+    function updateShowStatus(showStatus) {
+      if (showStatus && showStatus.availableSeats !== undefined) {
+        availableSeatsLabel.textContent = showStatus.availableSeats;
+      }
+      if (showStatus && showStatus.waitlistCount !== undefined) {
+        waitlistCountLabel.textContent = showStatus.waitlistCount;
+      }
     }
 
     function getSeatState(cellValue) {
@@ -563,6 +579,16 @@
         renderSeatMap(data);
         syncSelectionState();
         setStatus("Show #" + showId);
+        
+        // Fetch and update show status (available seats, waitlist count)
+        try {
+          const shows = await getShows(showId);
+          if (shows && shows.length > 0) {
+            updateShowStatus(shows[0]);
+          }
+        } catch (e) {
+          // Silently handle - not critical
+        }
       } catch (err) {
         seatMapShell.className = "seat-map-shell empty-state";
         seatMapShell.textContent = "Unable to load the seat map right now.";
@@ -655,6 +681,12 @@
         selectedSeat = null;
         recommendedLookup = {};
         hideErrorBanner();
+        
+        // Update show status with response data
+        if (result.showStatus) {
+          updateShowStatus(result.showStatus);
+        }
+        
         showBookingFeedback(
           "success",
           `Booking confirmed! Your Booking ID: ${bookingId}`,
@@ -765,6 +797,12 @@
         recommendedLookup = {};
         recommendedSeatsDisplay.classList.add("hidden");
         hideErrorBanner();
+        
+        // Update show status with response data
+        if (result.showStatus) {
+          updateShowStatus(result.showStatus);
+        }
+        
         showBookingFeedback(
           "success",
           `Group booking confirmed! Booking ID: ${bookingId}`,
@@ -805,14 +843,23 @@
       showBookingFeedback("info", "Joining waitlist…", true);
 
       try {
-        await joinWaitlist(showId, name, seatsNeeded);
+        const result = await joinWaitlist(showId, name, seatsNeeded);
         waitlistNameInput.value = "";
         waitlistSeatCountInput.value = "";
+        
+        // Update show status with response data
+        if (result.showStatus) {
+          updateShowStatus(result.showStatus);
+        }
+        
         showBookingFeedback(
           "success",
           "Added to waitlist! You will be notified when seats open up.",
           true,
         );
+        
+        // Reload seat map to reflect any auto-bookings
+        await loadSeatMap(true);
       } catch (err) {
         showBookingFeedback("error", err.message, true);
       } finally {
