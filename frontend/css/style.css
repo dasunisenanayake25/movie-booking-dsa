@@ -494,22 +494,27 @@ label {
 
 .seat-map-shell {
   display: grid;
-  gap: 6px;
-  min-width: max-content;
-  padding: 0.5rem 0;
+  gap: 8px;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 1rem 0;
 }
 
 .seat-row {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
 }
 
 .seat-axis {
-  width: 28px;
-  text-align: right;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: var(--text-muted);
   flex-shrink: 0;
   user-select: none;
