@@ -235,6 +235,13 @@
           </button>
         </div>
         <div id="single-booking-feedback" class="hidden" role="alert" style="margin-top: 0.75rem"></div>
+        
+        <div id="single-waitlist-suggest" class="hidden" style="margin-top: 1rem; padding: 1rem; background: var(--bg-raised); border-radius: var(--radius-md); border: 1px solid var(--border-gold);">
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+            This show is currently full. Join the waitlist to be notified if seats become available.
+          </p>
+          <button id="switch-to-waitlist-btn" type="button" class="button-secondary" style="width: 100%;">Join Waitlist Instead</button>
+        </div>
       </div>
 
       <!-- Group -->
@@ -415,6 +422,8 @@
     const waitlistCountLabel = document.getElementById(
       "waitlist-count-label",
     );
+    const singleWaitlistSuggest = document.getElementById("single-waitlist-suggest");
+    const switchToWaitlistBtn = document.getElementById("switch-to-waitlist-btn");
 
     // ── State ──
     const params = new URLSearchParams(window.location.search);
@@ -423,6 +432,7 @@
     let recommendedLookup = {};
     let groupRecommendedSeats = [];
     let currentSeatMapData = null;
+    let pollInterval = null;
 
     function seatKey(r, c) {
       return r + ":" + c;
@@ -457,10 +467,20 @@
     }
 
     function updateShowStatus(showStatus) {
-      if (showStatus && showStatus.availableSeats !== undefined) {
+      if (!showStatus) return;
+      
+      if (showStatus.availableSeats !== undefined) {
         availableSeatsLabel.textContent = showStatus.availableSeats;
+        
+        // Suggest waitlist if full
+        if (showStatus.availableSeats === 0) {
+          singleWaitlistSuggest.classList.remove("hidden");
+        } else {
+          singleWaitlistSuggest.classList.add("hidden");
+        }
       }
-      if (showStatus && showStatus.waitlistCount !== undefined) {
+      
+      if (showStatus.waitlistCount !== undefined) {
         waitlistCountLabel.textContent = showStatus.waitlistCount;
       }
     }
@@ -544,7 +564,24 @@
         seatMapShell.appendChild(rowEl);
       });
 
-      availableSeatsLabel.textContent = availCount;
+      // Update status labels from server data if available
+      if (data.availableSeats !== undefined) {
+        availableSeatsLabel.textContent = data.availableSeats;
+      } else {
+        availableSeatsLabel.textContent = availCount;
+      }
+      
+      if (data.waitlistCount !== undefined) {
+        waitlistCountLabel.textContent = data.waitlistCount;
+      }
+      
+      // Suggest waitlist if full
+      const seatsAvailable = data.availableSeats !== undefined ? data.availableSeats : availCount;
+      if (seatsAvailable === 0) {
+        singleWaitlistSuggest.classList.remove("hidden");
+      } else {
+        singleWaitlistSuggest.classList.add("hidden");
+      }
     }
 
     // ── Load seat map ──
@@ -579,16 +616,6 @@
         renderSeatMap(data);
         syncSelectionState();
         setStatus("Show #" + showId);
-        
-        // Fetch and update show status (available seats, waitlist count)
-        try {
-          const shows = await getShows(showId);
-          if (shows && shows.length > 0) {
-            updateShowStatus(shows[0]);
-          }
-        } catch (e) {
-          // Silently handle - not critical
-        }
       } catch (err) {
         seatMapShell.className = "seat-map-shell empty-state";
         seatMapShell.textContent = "Unable to load the seat map right now.";
@@ -636,12 +663,19 @@
     });
 
     groupTab.addEventListener("click", () => {
-      groupTab.classList.add("active");
       groupTab.setAttribute("aria-selected", "true");
       singleTab.classList.remove("active");
       singleTab.setAttribute("aria-selected", "false");
       groupPanel.classList.add("active");
       singlePanel.classList.remove("active");
+    });
+
+    switchToWaitlistBtn.addEventListener("click", () => {
+      groupTab.click();
+      waitlistForm.classList.remove("hidden");
+      waitlistNameInput.value = bookingNameInput.value.trim();
+      waitlistSeatCountInput.value = "1";
+      waitlistForm.scrollIntoView({ behavior: "smooth", block: "center" });
     });
 
     // ── Single booking ──
@@ -897,6 +931,14 @@
     // ── Init ──
     syncSelectionState();
     loadSeatMap();
+    
+    // Auto-refresh every 10 seconds to keep status in sync
+    pollInterval = setInterval(() => loadSeatMap(true), 10000);
+
+    // Cleanup on unload
+    window.addEventListener("beforeunload", () => {
+      if (pollInterval) clearInterval(pollInterval);
+    });
   </script>
 </body>
 

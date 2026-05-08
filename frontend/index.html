@@ -341,6 +341,19 @@
     }
 
     .showtime-meta { font-size: 0.82rem; }
+    .availability-high { color: var(--text-gold); }
+    .availability-low { color: #f39c12; }
+    .availability-full { color: #e74c3c; }
+
+    .waitlist-tag {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1px 6px;
+      border-radius: 6px;
+      margin-left: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
 
     .showtime-right {
       display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap; justify-content: flex-end;
@@ -928,18 +941,20 @@
 
       showtimesContent.innerHTML = state.shows.map(show => {
         const avail = availabilityClass(show.availableSeats);
+        const waitlistText = show.waitlistCount > 0 ? `<span class="waitlist-tag">Waitlist: ${show.waitlistCount}</span>` : '';
         return `
           <div class="showtime-row">
             <div class="showtime-left">
               <div class="showtime-datetime">${escapeHtml(show.datetime)}</div>
               <div class="showtime-meta">
                 <span class="${avail}">${escapeHtml(show.availableSeats)} seats available</span>
+                ${waitlistText}
               </div>
             </div>
             <div class="showtime-right">
               <div class="showtime-price">LKR ${escapeHtml(show.price)}</div>
               <a class="select-seats-btn" href="show.html?showId=${encodeURIComponent(show.id)}">
-                Select Seats →
+                ${show.availableSeats > 0 ? 'Select Seats →' : 'Join Waitlist →'}
               </a>
             </div>
           </div>`;

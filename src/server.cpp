@@ -443,7 +443,10 @@ namespace
             json += "]";
         }
 
-        json += "]}";
+        json += "],";
+        json += "\"availableSeats\":" + std::to_string(system.getAvailableCount(showId)) + ",";
+        json += "\"waitlistCount\":" + std::to_string(system.store.shows[showIndex].waitCount);
+        json += "}";
         return json;
     }
 
