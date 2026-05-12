@@ -185,11 +185,8 @@ QueueArrayWait
 
 ```bash
 # Compile the REST API server
-g++ -std=c++17 -Wall -Wextra -pedantic src/server.cpp \
-    src/BookingSystem.cpp src/SeatingGrid.cpp src/BSTMovieTitle.cpp \
-    src/MergeSortShows.cpp src/QueueArrayWait.cpp \
-    src/HashTableIntToIndex.cpp src/SinglyLinkedList.cpp \
-    src/Store.cpp src/SampleData.cpp -I include -lws2_32 -o server.exe
+g++ -std=c++14 -Wall -Wextra -pedantic src/server.cpp src/BookingSystem.cpp src/SeatingGrid.cpp src/BSTMovieTitle.cpp src/MergeSortShows.cpp src/QueueArrayWait.cpp src/HashTableIntToIndex.cpp src/SinglyLinkedList.cpp src/Store.cpp src/SampleData.cpp -I include -lws2_32 -o server.exe
+
 
 # Run the server (default port 8080)
 ./server.exe
@@ -198,12 +195,8 @@ g++ -std=c++17 -Wall -Wextra -pedantic src/server.cpp \
 open frontend/index.html
 
 # Compile the console app
-g++ -std=c++17 -Wall -Wextra -pedantic src/main.cpp \
-    src/BookingSystem.cpp src/SeatingGrid.cpp src/BSTMovieTitle.cpp \
-    src/MergeSortShows.cpp src/QueueArrayWait.cpp \
-    src/HashTableIntToIndex.cpp src/SinglyLinkedList.cpp \
-    src/Store.cpp src/SampleData.cpp src/ConsoleIO.cpp src/Menu.cpp \
-    -I include -o app.exe
+g++ -std=c++17 -Wall -Wextra -pedantic src/main.cpp src/BookingSystem.cpp src/SeatingGrid.cpp src/BSTMovieTitle.cpp src/MergeSortShows.cpp src/QueueArrayWait.cpp src/HashTableIntToIndex.cpp src/SinglyLinkedList.cpp src/Store.cpp src/SampleData.cpp src/ConsoleIO.cpp src/Menu.cpp -I include -o app.exe
+
 
 # Run the console app
 ./app.exe
@@ -221,3 +214,4 @@ g++ -std=c++17 -Wall -Wextra -pedantic src/main.cpp \
 | Binary Search Tree | `BSTMovieTitle` | Movie title search | Dasuni |
 | Merge Sort | `MergeSortShows` | Chronological show listing | Dasuni |
 | Circular Queue | `QueueArrayWait` | Per-show waitlist | Danith |
+
