@@ -1,4 +1,4 @@
-# 🎬 CineBook — Cinema Booking System
+# 🎬 NoirCinema — Cinema Booking System
 
 A full-stack cinema booking system built with a **C++ backend** (REST API via cpp-httplib) and a **vanilla HTML/CSS/JS frontend**. The system supports movie browsing, seat selection, group bookings, waitlist management, and booking cancellations — all powered by custom-built data structures.
 

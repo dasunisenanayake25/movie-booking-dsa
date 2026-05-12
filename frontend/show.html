@@ -1,5 +1,53 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NoirCinema — Select Seats</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .page-content {
+        gap: 1.25rem;
+      }
+
+      /* Show info bar */
+      .show-info-bar {
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border);
+      }
+      .show-info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.85rem 0;
+        flex-wrap: wrap;
+      }
+      .show-info-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-style: italic;
+        color: var(--text-primary);
+        font-size: 1rem;
+      }
+      .show-info-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(201, 168, 76, 0.07);
+        border: 1px solid var(--border-gold);
+        color: var(--gold);
+        font-size: 0.82rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      /* Booking panel */
+      .booking-panel {
+        background: var(--bg-surface) !important;
+      }
 
 <head>
   <meta charset="UTF-8" />
@@ -181,18 +229,14 @@
         </div>
       </div>
 
-      <div class="seat-legend" aria-label="Legend">
-        <div class="legend-item">
-          <span class="legend-swatch available"></span>Available
-        </div>
-        <div class="legend-item">
-          <span class="legend-swatch taken"></span>Taken
-        </div>
-        <div class="legend-item">
-          <span class="legend-swatch selected"></span>Selected
-        </div>
-        <div class="legend-item">
-          <span class="legend-swatch recommended"></span>Recommended
+    <header class="page-header" role="banner">
+      <div class="container">
+        <div class="header-row">
+          <div class="brand"><strong>🎬 NoirCinema</strong></div>
+          <nav class="top-nav" aria-label="Main navigation">
+            <a href="index.html">← Movies</a>
+            <a href="booking.html">My Booking</a>
+          </nav>
         </div>
       </div>
 
@@ -344,28 +388,8 @@
       </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="footer-full" role="contentinfo">
-      <div class="container">
-        <p class="footer-contact">Questions? <a href="#">Contact us</a></p>
-        <div class="footer-links-grid">
-          <a href="#">FAQ</a>
-          <a href="#">Help Centre</a>
-          <a href="#">Account</a>
-          <a href="#">Media Centre</a>
-          <a href="#">Investor Relations</a>
-          <a href="#">Jobs</a>
-          <a href="#">Ways to Book</a>
-          <a href="#">Terms of Use</a>
-          <a href="#">Privacy</a>
-          <a href="#">Cookie Preferences</a>
-          <a href="#">Corporate Information</a>
-          <a href="#">Contact Us</a>
-          <a href="#">Legal Notices</a>
-          <a href="#">Only on CineBook</a>
-        </div>
-        <p class="footer-copy">🎬 CineBook &copy; 2026 — Cinema Booking System</p>
-      </div>
+    <footer class="site-footer">
+      <div class="container">🎬 NoirCinema — Cinema Booking System</div>
     </footer>
   </div>
 

@@ -32,7 +32,7 @@ void Menu::run(BookingSystem &system)
         ConsoleIO::clearScreen();
         cout << endl;
         ConsoleIO::printDivider();
-        cout << "        MOVIE TICKET BOOKING" << endl;
+        cout << "        NOIRCINEMA TICKET BOOKING" << endl;
         ConsoleIO::printDivider();
         cout << "1) Book Tickets" << endl;
         cout << "2) Search Movie" << endl;

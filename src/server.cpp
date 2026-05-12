@@ -766,11 +766,11 @@ int main()
 
     server.set_mount_point("/", "./frontend");
 
-    std::cout << "HTTP server listening on http://localhost:8080" << std::endl;
+    std::cout << "NoirCinema HTTP server listening on http://localhost:8080" << std::endl;
 
     if (!server.listen("0.0.0.0", 8080))
     {
-        std::cerr << "Failed to start HTTP server on port 8080" << std::endl;
+        std::cerr << "Failed to start NoirCinema HTTP server on port 8080" << std::endl;
         return 1;
     }
 
