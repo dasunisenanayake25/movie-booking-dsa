@@ -1,5 +1,5 @@
 #include <iomanip>
-#include "../include/SeatingGrid.h"
+#include "SeatingGrid.h"
 
 SeatingGrid::SeatingGrid()
 {

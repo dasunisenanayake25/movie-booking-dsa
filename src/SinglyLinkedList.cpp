@@ -1,5 +1,5 @@
 #include <cstddef>
-#include "../include/SinglyLinkedListInt.h"
+#include "SinglyLinkedListInt.h"
 
 SinglyLinkedListInt::SinglyLinkedListInt()
 {
