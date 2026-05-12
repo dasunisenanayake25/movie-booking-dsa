@@ -210,7 +210,8 @@ g++ -std=c++17 -Wall -Wextra -pedantic src/main.cpp src/BookingSystem.cpp src/Se
 |---|---|---|---|
 | 2D Array Grid | `SeatingGrid` | Per-show seat layout | Amarasie |
 | Hash Table | `HashTableIntToIndex` | ID → index lookup | Amarasie |
+| Singly Linked List | `SinglyLinkedListInt` | Per-show booking list | Amarasie |
 | Binary Search Tree | `BSTMovieTitle` | Movie title search | Dasuni |
 | Merge Sort | `MergeSortShows` | Chronological show listing | Dasuni |
 | Circular Queue | `QueueArrayWait` | Per-show waitlist | Danith |
-| Singly Linked List | `SinglyLinkedListInt` | Per-show booking list | Danith |
+
