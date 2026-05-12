@@ -12,10 +12,11 @@
 #include <sstream>
 #include <string>
 
+#include "httplib.h"
+
 #define private public
 #include "BookingSystem.h"
 #undef private
-#include "httplib.h"
 
 namespace
 {

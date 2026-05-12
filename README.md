@@ -184,18 +184,29 @@ QueueArrayWait
 **Requirements:** C++17 compiler (g++ / clang++), cpp-httplib (bundled in `include/httplib.h`)
 
 ```bash
-# Compile (see .vscode/tasks.json for full flags)
-g++ -std=c++17 -o cinebook src/server.cpp src/BookingSystem.cpp \
-    src/SeatingGrid.cpp src/BSTMovieTitle.cpp src/MergeSortShows.cpp \
-    src/QueueArrayWait.cpp src/HashTableIntToIndex.cpp \
-    src/SinglyLinkedList.cpp src/Store.cpp src/SampleData.cpp \
-    src/ConsoleIO.cpp src/Menu.cpp src/main.cpp -I include
+# Compile the REST API server
+g++ -std=c++17 -Wall -Wextra -pedantic src/server.cpp \
+    src/BookingSystem.cpp src/SeatingGrid.cpp src/BSTMovieTitle.cpp \
+    src/MergeSortShows.cpp src/QueueArrayWait.cpp \
+    src/HashTableIntToIndex.cpp src/SinglyLinkedList.cpp \
+    src/Store.cpp src/SampleData.cpp -I include -lws2_32 -o server.exe
 
 # Run the server (default port 8080)
-./cinebook
+./server.exe
 
 # Open the frontend
 open frontend/index.html
+
+# Compile the console app
+g++ -std=c++17 -Wall -Wextra -pedantic src/main.cpp \
+    src/BookingSystem.cpp src/SeatingGrid.cpp src/BSTMovieTitle.cpp \
+    src/MergeSortShows.cpp src/QueueArrayWait.cpp \
+    src/HashTableIntToIndex.cpp src/SinglyLinkedList.cpp \
+    src/Store.cpp src/SampleData.cpp src/ConsoleIO.cpp src/Menu.cpp \
+    -I include -o app.exe
+
+# Run the console app
+./app.exe
 ```
 
 ---
