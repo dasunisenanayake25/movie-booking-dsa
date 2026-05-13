@@ -7,24 +7,7 @@ using namespace std;
 #include "BookingSystem.h"
 #include "SampleData.h"
 
-namespace
-{
-std::string showLabelFromIndex(int index)
-{
-    std::string label;
-    int value = index;
 
-    do
-    {
-        int remainder = value % 26;
-        label.insert(label.begin(), static_cast<char>('a' + remainder));
-        value = (value / 26) - 1;
-    }
-    while (value >= 0);
-
-    return label;
-}
-}
 
 BookingSystem::BookingSystem()
 {
@@ -210,7 +193,7 @@ int BookingSystem::bookSingle(int showId, const std::string &name, int row, int 
     cout << "Booking ID: " << bookingId << endl;
     cout << "Seats: (" << row << "," << col << ")" << endl;
     cout << "Total price: " << store.shows[showIndex].price << endl;
-    return 1;
+    return bookingId;
 }
 
 int BookingSystem::bookGroup(int showId, const std::string &name, int seatsNeeded)
@@ -264,7 +247,7 @@ int BookingSystem::bookGroup(int showId, const std::string &name, int seatsNeede
     }
     cout << endl;
     cout << "Total price: " << store.shows[showIndex].price * seatsNeeded << endl;
-    return 1;
+    return bookingId;
 }
 
 int BookingSystem::bookGroupSeats(int showId, const std::string &name, Seat seats[], int seatCount)
@@ -314,7 +297,7 @@ int BookingSystem::bookGroupSeats(int showId, const std::string &name, Seat seat
     }
     cout << endl;
     cout << "Total price: " << store.shows[showIndex].price * seatCount << endl;
-    return 1;
+    return bookingId;
 }
 
 void BookingSystem::viewBooking(int bookingId) const
