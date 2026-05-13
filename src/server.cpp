@@ -185,11 +185,6 @@ namespace
         return escaped;
     }
 
-    std::string buildSuccessJson(bool success)
-    {
-        return std::string("{\"success\":") + (success ? "true" : "false") + "}";
-    }
-
     std::string buildErrorJson(const std::string &message)
     {
         return std::string("{\"error\":\"") + escapeJson(message) + "\"}";

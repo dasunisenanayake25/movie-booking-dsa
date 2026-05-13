@@ -1,5 +1,4 @@
 #include <iostream>
-using namespace std;
 
 #ifdef _WIN32
 #include <windows.h>
@@ -7,6 +6,8 @@ using namespace std;
 
 #include "BookingSystem.h"
 #include "Menu.h"
+
+using namespace std;
 
 int main()
 {
